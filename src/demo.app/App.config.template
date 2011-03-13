@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <connectionStrings>
+        <add name="demodb"
+             connectionString="data source=[[fullpath (getnodepackagepath demo.db)]]\[[getnodepackagename demo.db]]"
+             providerName="System.Data.SqlServerCe.4.0" />
+    </connectionStrings>
+</configuration>

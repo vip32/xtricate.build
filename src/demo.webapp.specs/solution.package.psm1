@@ -1,0 +1,1 @@
+solutionpackage "demo.webapp.specs"

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+     <id>xtricate.build</id>
+    <version>0.10.10311.1301</version>
+    <authors>vip32</authors>
+    <owners>vip32</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>xtricate.build is a psake build and deployment extension</description>
+    <tags>psake build deploy</tags>
+  </metadata>
+  <files>
+    <file src="modules\**\*.*" target="build\modules" />
+	<!--<file src="tools\graphviz\*.*" target="build\tools\graphviz" /> disabled for now - gives nuget push error -->
+	<file src="tools\nunit\**\*.*" target="build\tools\nunit" />
+	<file src="tools\*.exe" target="build\tools" />
+	<file src="psake*.*" target="build" />
+	<file src="default*.*" target="build" />
+	<file src="..\src\**\*.*" target="src" />
+  </files>
+</package>
