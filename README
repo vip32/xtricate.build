@@ -1,1 +1,10 @@
-todo
+src\demo* will demonstrate a deployable solution using these xtricate.build extensions
+
+xtricate.build includes : 
+configuration management
+nuget package management
+solution build
+configuration and script templating
+output packaging
+local and remote deployment
+html and diagram documentation
