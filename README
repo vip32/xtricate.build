@@ -1,6 +1,6 @@
-src\demo* will demonstrate a deployable solution using these xtricate.build extensions
+src\demo* demonstrates a buildable and deployable solution using these xtricate.build extensions
 
-xtricate.build includes : 
+xtricate.build features : 
 configuration management
 nuget package management
 solution build
@@ -8,3 +8,9 @@ configuration and script templating
 output packaging
 local and remote deployment
 html and diagram documentation
+
+xtricate.build contains a modified version of psake by James Kovacs. some small
+improvements in module loading were made.
+
+some modules are based on work by:
+ang3lfir3/chewie : nuget package management

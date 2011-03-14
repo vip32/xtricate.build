@@ -1,4 +1,7 @@
+lib/
+build/output/
 lib/**/* 
 build/output/**/* 
 src/**/bin/* 
 src/**/obj/* 
+src/**/AssemblyInfo.cs
