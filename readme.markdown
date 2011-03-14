@@ -31,7 +31,9 @@ src\demo* demonstrates a buildable and deployable solution using these xtricate.
 ### model introduction
 this extension relies heavily on an environment model, like a dsl, which contains all the environments. 
 the model file to use is specified in the properties of the psake buildfile.
+
 > $modelfile=resolvedefaultmodel
+
 the defaultmodel function resolves to 'default.model.ps1' if the psake buildfile used is named 'default.ps1'.
 an environment consists of nodes (e.g. computers, load balancers). each node has resources and packages assigned to it
 a resource is something that will be there or must be created (e.g. accounts, apppools, websites).
