@@ -4,5 +4,4 @@ lib/**/*
 build/output/**/* 
 src/**/bin/* 
 src/**/obj/* 
-src/**/AssemblyInfo.cs
-src/demo.app/Properties/AssemblyInfo.cs
+**/AssemblyInfo.cs
