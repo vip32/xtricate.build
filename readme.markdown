@@ -20,19 +20,25 @@ src\demo* demonstrates a buildable and deployable solution using these xtricate.
 
 ### usage examples
 > .\psake.cmd package
-> - this will initiate the creation of the packages
-> 
-> .\psake.cmd packageinstall 
-> - this will install the packages on the local node
+> - initiates the creation of the output packages
 >
-> .\psake.cmd remotepackageinstall -nodes nodeX -tags all
-> - this will install the packages matching the tags on the remote node 
+> .\psake.cmd templatelocal
+> - expands all templates in the sources folder
+>   
+> .\psake.cmd packageinstall 
+> - initiates the creation of the output packages and installs them on the current node
+>
+> .\psake.cmd remotepackageinstall -environment test -nodes nodeX -tags all
+> -  installs the packages matching the tags on the remote node. before installing all templates are expanded for the givven environment
 
-### model introduction
-this extension relies heavily on an environment model, like a dsl, which contains all the environments. 
-the model file to use is specified in the properties of the psake buildfile.
+### environment model introduction
+xtricate.build relies heavily on an environment model, like a dsl, which contains all the environments important for my project. 
+examples of environments are : the local development workstation, a test or production environment. xtricate.build can manage the deployment of your project
+through  all these environment. the environment model file to use is specified within the properties of the psake buildfile.
 
+> ...
 > $modelfile=resolvedefaultmodel
+> ...
 
 the defaultmodel function resolves to 'default.model.ps1' if the psake buildfile used is named 'default.ps1'.
 an environment consists of nodes (e.g. computers, load balancers). each node has resources and packages assigned to it
@@ -51,7 +57,20 @@ a package is something that is created by your project, for example : websites, 
 		node 'dbserver'
 			resources
 			package
-		
+			
+### local and remote project installation
+
+the contents of the build folder contains everything needed for deployment on any node within an environment. 
+starting with the following command to create the output packages :
+
+> .\psake.cmd package
+
+then copying the build folder to a node and executing :
+
+> .\psake.cmd install
+
+will install, according to the environment model, all applicable resources and packages on that node. 
+
 ### the demo solution uses the following technologies :
 * microsoft visual studio 2010
 * microsoft asp.net mvc 3
