@@ -14,3 +14,8 @@ improvements in module loading were made.
 
 some modules are based on work by:
 ang3lfir3/chewie : nuget package management
+
+demo solution uses the following technologies :
+microsoft visual studio 2010
+microsoft asp.net mvc 3
+microsoft sql ce 4.0
