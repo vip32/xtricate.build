@@ -40,17 +40,17 @@ a resource is something that will be there or must be created (e.g. accounts, ap
 a package is something that is created by your project, for example : websites, folders, webservices, scheduled tasks, windows services
 
 ## the environment model dsl :
-environment 'local'
-	node 'localhost'
-		resources
-		packages
-environment 'test'
-	node 'webserver'
-		resources
-		packages
-	node 'dbserver'
-		resources
-		package
+	environment 'local'
+		node 'localhost'
+			resources
+			packages
+	environment 'test'
+		node 'webserver'
+			resources
+			packages
+		node 'dbserver'
+			resources
+			package
 		
 ### the demo solution uses the following technologies :
 * microsoft visual studio 2010
