@@ -1,0 +1,4 @@
+lib/**/* 
+build/output/**/* 
+src/**/bin/* 
+src/**/obj/* 
