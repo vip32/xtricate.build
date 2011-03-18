@@ -20,7 +20,7 @@ namespace demo.integrationtests
         {
             var val = _repository.Get("id1");
             Assert.That(val, Is.Not.Null);
-            Assert.That(val.Value, Is.EqualTo("local1"));
+            Assert.That(val.Value, Is.EqualTo("value1"));
         }
 
         [Test]

@@ -72,6 +72,9 @@ configuration `
                             } `
                             -skipinstallcopy -tags "all", "sites"
                         
+                        systemtestpackage "demo.integrationtests" "demo integration tests" `
+							-skipinstallcopy -tags "all"
+                        
                         systemtestpackage "demo.webapp.specs" "demo web application specflow tests" `
 							-skipinstallcopy -tags "all"
                             
