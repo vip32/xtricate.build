@@ -1,1 +1,0 @@
-solutionpackage "demo.app" 
