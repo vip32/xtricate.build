@@ -396,6 +396,7 @@ function WebSite {
                     $thumbprint = $certificate.thumbprint
                     New-WebBinding -Name $name -IP "*" -Port 443 -Protocol https
                     Set-Location IIS:\SslBindings
+                    if(Test-Path 0.0.0.0!443){ Remove-Item 0.0.0.0!443 }
                     Get-ChildItem cert:\LocalMachine\My | Where-Object {$_.ThumbPrint -eq $thumbprint} | Select-Object -First 1 | New-Item 0.0.0.0!443
                 }
                 
