@@ -30,12 +30,16 @@ function Get-NodeResource {
     param(
         [Parameter(Position=0,Mandatory=1)]
         [string] $resourceid,
-		[switch] $throwerror = $true
+		[switch] $throwerror = $true,
+        [switch] $returnnode = $false
     )
     Write-Verbose "getting node resource with id $resourceid"
     foreach($node in $psake.build_configuration_environment._nodes){
         foreach($resource in $node._resources){
-            if($resource.id -eq $resourceid){ return $resource }
+            if($resource.id -eq $resourceid){ 
+                if($returnnode) { return $node }
+                return $resource 
+            }
         }
     }
     if($throwerror){ throw "Cannot find resource with id $resourceid on any node in environment" }

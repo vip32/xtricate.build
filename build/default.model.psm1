@@ -57,11 +57,16 @@ configuration `
                             -certificateref "websslcert" `
                             -settings { setting "demosetting" "local" } `
                              -tags "all", "sites"
+                             
+                        hostsfile "demohost" "local host file" {
+                                hostsfilewebsite "demosite" "demo site host entry comment"
+                                hostsfilecustom "routerhostname" "192.168.1.1" "demo router host entry comment"
+                        } -tags "all"
                     } `
                     -packages {
                         databasepackage "demo.app" "demo console app" `
                             -path "..\src\demo.app" `
-                            -tags "all" 
+                            -skipinstallcopy -tags "all" 
                             
 						databasepackage "demo.db" "demodatabase1_local.sdf" `
                             -description "demo database for local environment" `

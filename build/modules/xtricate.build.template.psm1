@@ -58,7 +58,8 @@ function Template-Expand
 		{
 			throw "Template-Expand: path `'$path`' can't be found"
 		}
-        Write-Host "source: $path"
+        $relpath = Get-RelativePath (fullpath .) $path
+        Write-Host "expand: $relpath"
 		# Read text and join the returned Object[] with newlines
 		$text = [string]::join([environment]::newline, (Get-Content -Path $path -Encoding $Encoding))
 	}
@@ -112,7 +113,7 @@ function Template-Expand
 	}
 	else
 	{
-        Write-Host "target:$destination`n"
+        Write-Verbose "target:$destination`n"
         if(Test-Path $destination){ Set-ItemProperty $destination -name IsReadOnly -value $false}
 		Set-Content -Path $destination -value $expandedText -encoding $Encoding
 	}

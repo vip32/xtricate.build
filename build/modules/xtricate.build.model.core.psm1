@@ -9,10 +9,10 @@
 		[Parameter(Mandatory=0)]
 		[scriptblock] $solutionpackages = $null
 	)
-	Write-Host "load model: $modelfile"
+	Write-Host "load model: $(Get-RelativePath (fullpath .) $modelfile)" 
 	import-module $modelfile -force -DisableNameChecking
     
-	Write-Host "load solutionpackages: $packagespath"
+	Write-Host "load solutionpackages: $(Get-RelativePath (fullpath .) $packagesPath)"
     if($packagesPath -ne $null){ Load-Solution-Packages $packagesPath }
 	if($solutionpackages -ne $null){ 
 			Write-Host "load solutionpackages: custom"
@@ -47,7 +47,7 @@ function Load-Solution-Packages {
 	                if (!$module){ throw ("error loading package" -f $_.Name)} 
 	                $solutionpackage = $psake.build_solution_packages[-1];
 	                $solutionpackage.name = $_.directory.name;
-	                $solutionpackage.location = RelativePath -path $_.directoryname -basepath $packagespath -combine
+					$solutionpackage.location = Get-RelativePath (fullpath .) $_.directoryname
 	                $solutionpackage.fulllocation = $_.fullname
 	                #Write-Host "solution package: $($solutionpackage.name) [$($solutionpackage.packageid)] $($solutionpackage.location)";
 	            }

@@ -219,9 +219,7 @@ function Certificate {
         
         function Documentation {
             $settingstable = Format-Textile "table{border:1px solid black}.
-                                            |_<. setting |_<. value |
-                                            | identity resource | ""$($identityref)"":$($identityref) |
-                                            | classic| $classic |"
+                                            |_<. setting |_<. value |"
             "## resource - $($type) '$($name)' [$($id)]
             $($settingstable)<br>"
         }
@@ -392,12 +390,17 @@ function WebSite {
                 New-Website -Name $name -PhysicalPath (fullpath $path) -Hostheader $hostheader -Port $port -ApplicationPool $apppoolname -Force | Out-Null
                 
                 if($certificateref){
-                    $certificate = Get-NodeResource $certificateref
-                    $thumbprint = $certificate.thumbprint
-                    New-WebBinding -Name $name -IP "*" -Port 443 -Protocol https
-                    Set-Location IIS:\SslBindings
-                    if(Test-Path 0.0.0.0!443){ Remove-Item 0.0.0.0!443 }
-                    Get-ChildItem cert:\LocalMachine\My | Where-Object {$_.ThumbPrint -eq $thumbprint} | Select-Object -First 1 | New-Item 0.0.0.0!443
+                    try{
+                        $certificate = Get-NodeResource $certificateref
+                        $thumbprint = $certificate.thumbprint
+                        New-WebBinding -Name $name -IP "*" -Port 443 -Protocol https | Out-Null
+                        Set-Location IIS:\SslBindings
+                        if(Test-Path 0.0.0.0!443){ Remove-Item 0.0.0.0!443 }
+                        Get-ChildItem cert:\LocalMachine\My | Where-Object {$_.ThumbPrint -eq $thumbprint} | Select-Object -First 1 | New-Item 0.0.0.0!443 | Out-Null
+                    }
+                    catch{
+                        Write-Warning "ssl cert error"
+                    }
                 }
                 
                 Start-Website -Name $name 
@@ -410,9 +413,13 @@ function WebSite {
             if(!($skipuninstall)){
                 Load-WebAdmin
                 Write-Host "$($type): $name [$id]"
+                if($certificateref){
+                    Set-Location IIS:\SslBindings
+                    if(Test-Path 0.0.0.0!443){ Remove-Item 0.0.0.0!443 }
+                }
                 if(Test-Path "IIS:\Sites\$name"){
-                Stop-Website -Name $name
-                Remove-Website -Name $name
+                    Stop-Website -Name $name
+                    Remove-Website -Name $name
                 }
             }
 		}
@@ -456,5 +463,161 @@ function WebSite {
 	}
 }
 #New-Alias -Name website -value New-WebSite -Description "" -Force
+
+function HostsFile {
+	param (
+			[Parameter(Position=0,Mandatory=1)]
+			[string] $id,
+			[Parameter(Position=1,Mandatory=1)]
+			[string] $name,
+            [Parameter(Position=2,Mandatory=0)]
+			[scriptblock] $entries = $null,
+            [Parameter(Mandatory=0)]
+			[string] $path = "$($env:windir)\System32\drivers\etc\hosts",
+            [Parameter(Mandatory=0)]
+            [string] $description = $null,
+            [Parameter(Mandatory=0)]
+            [switch] $skipuninstall = $false,
+            [Parameter(Mandatory=0)]
+			[scriptblock] $settings = $null,
+            [Parameter(Mandatory=0)]
+			[string[]] $dependson = @(),
+			[Parameter(Mandatory=0)]
+			[string[]] $tags = @()
+	)
+	New-Module -ArgumentList $id, $name, $entries, $path, $description, $skipinstall, $skipuninstall, $settings, $dependson, $tags -AsCustomObject {
+		param ( $id, $name, $entries, $path, $description, $skipinstall, $skipuninstall, $settings, $dependson, $tags )
+		$type = "hostsfile"
+        
+        if($entries -ne $null){ $_entries = &$entries }
+        if($settings -ne $null){ $_settings = &$settings }
+        
+        function Entries { 
+			&$entries
+		}
+        
+        function Settings { 
+			&$settings
+		}
+		
+		function List {
+		}
+        
+		function Install {
+            if(!($skipinstall)){
+                Write-Host "$($type): $name [$id]"
+                $content=@(get-content $path)
+                $newlines=@()
+                foreach($entry in $_entries){
+                    $line = $entry.ToEntry()
+                    $add = $true
+                    foreach($l in $content){
+                        if($l -eq $line){ $add = $false }
+                    }
+                    if($add) { $newlines += $line }
+                }
+                $save=$false
+                foreach($line in $newlines){ 
+                    $content += $line 
+                    $save=$true
+                }
+                if($save){ Set-Content $path $content }
+            }
+        }
+		
+		function UnInstall {
+            if(!($skipuninstall)){
+                Write-Host "$($type): $name [$id] "
+                
+                # todo, not implemented yet
+            }
+		}
+        
+        function Documentation {
+            $settingstable = Format-Textile "table{border:1px solid black}.
+                                            |_<. setting |_<. value |"
+            "## resource - $($type) '$($name)' [$($id)]
+            $($settingstable)<br>"
+        }
+        
+		function ToString(){
+			"`n    | $type [$id]: name=$name"
+       
+            if($_settings -ne $null){
+                foreach($setting in $_settings){
+                    $setting.tostring() 
+                }
+            }
+		}
+		Export-ModuleMember -Function Documentation, ToString, Entries, Settings, List, Install, UnInstall -Variable type, id, name, path, description, skipinstall, skipuninstall, dependson, tags, _entries, _settings
+	}
+}
+
+function HostsFileWebSite {
+	param (
+			[Parameter(Position=0,Mandatory=1)]
+			[string] $websiteref,
+            [Parameter(Position=1,Mandatory=0)]
+            [string] $description = $null,
+            [Parameter(Mandatory=0)]
+            [switch] $skipuninstall = $false,
+            [Parameter(Mandatory=0)]
+			[scriptblock] $settings = $null,
+			[Parameter(Mandatory=0)]
+			[string[]] $tags = @()
+	)
+	New-Module -ArgumentList $websiteref, $description, $settings, $tags -AsCustomObject {
+		param ( $websiteref, $description, $settings, $tags )
+		$type = "hostsfilewebsite"
+        
+        if($settings -ne $null){ $_settings = &$settings }
+        
+        function Settings {
+			&$settings
+		}
+		
+        function ToEntry(){
+            $website = Get-NodeResource $websiteref
+            $node = Get-NodeResource $websiteref -returnnode 
+            "$($node.ip)`t`t$($website.hostheader)`t`t`t`t# $($website.name)"
+        }
+        
+		Export-ModuleMember -Function ToEntry, Settings -Variable type, websiteref, description, tags, _settings
+	}
+}
+
+function HostsFileCustom {
+	param (
+			[Parameter(Position=0,Mandatory=1)]
+			[string] $hostname,
+            [Parameter(Position=1,Mandatory=1)]
+			[string] $ip = "localhost",
+            [Parameter(Position=2,Mandatory=0)]
+            [string] $description = $null,
+            [Parameter(Mandatory=0)]
+            [switch] $skipuninstall = $false,
+            [Parameter(Mandatory=0)]
+			[scriptblock] $settings = $null,
+			[Parameter(Mandatory=0)]
+			[string[]] $tags = @()
+	)
+	New-Module -ArgumentList $hostname, $ip, $description, $settings, $tags -AsCustomObject {
+		param ( $hostname, $ip, $description, $settings, $tags )
+		$type = "hostsfilecustom"
+        
+        if($settings -ne $null){ $_settings = &$settings }
+        
+        function Settings {
+			&$settings
+		}
+		
+        function ToEntry(){
+            if($ip -eq "localhost") { $ip = "127.0.0.1"}
+            "$($ip)`t`t$($hostname)`t`t`t`t# $($description)"
+        }
+        
+		Export-ModuleMember -Function ToEntry, Settings -Variable type, hostname, ip, description, tags, _settings
+	}
+}
 
 Export-Modulemember -alias * -Function *

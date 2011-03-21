@@ -16,21 +16,57 @@ function Core-ArrayNotNullOrEmpty{
 }
 New-Alias -Name ArrayNotNullOrEmpty -value Core-ArrayNotNullOrEmpty -Description "" -Force
 
-function Relative-Path{
+function Get-RelativePath {
+    <#
+    .SYNOPSIS
+    Get a path to a file (or folder) relative to another folder
+    .DESCRIPTION
+    Converts the FilePath to a relative path rooted in the specified Folder
+    .PARAMETER Folder
+    The folder to build a relative path from
+    .PARAMETER FilePath
+    The File (or folder) to build a relative path TO
+    .PARAMETER Resolve
+    If true, the file and folder paths must exist
+    .Example
+    Get-RelativePath ~\Documents\WindowsPowerShell\Logs\ ~\Documents\WindowsPowershell\Modules\Logger\log4net.xslt
+    
+    ..\Modules\Logger\log4net.xslt
+    
+    Returns a path to log4net.xslt relative to the Logs folder
+    #>
+    [CmdletBinding()]
     param(
-        [string] $path = $(throw "path is a required parameter."),
-        [string] $basepath = $(throw "basepath is a required parameter."),
-        [switch] $combine = $false
+        [Parameter(Mandatory=1, Position=0)]
+        [string]$Folder, 
+        [Parameter(Mandatory=1, Position=1, ValueFromPipelineByPropertyName=$true)]
+        [Alias("FullName")]
+        [string]$FilePath,
+        [switch]$Resolve
     )
-    if(!($combine)){
-        return [system.io.path]::GetFullPath($path).SubString([system.io.path]::GetFullPath($basepath).Length + 1)
-    }
-    else{
-        $relativepath = [system.io.path]::GetFullPath($path).SubString([system.io.path]::GetFullPath($basepath).Length + 1)
-        return "$basepath\$relativepath"
+    process {
+        Write-Verbose "Resolving paths relative to '$Folder'"
+        $from = $Folder = split-path $Folder -NoQualifier -Resolve:$Resolve
+        $to = $filePath = split-path $filePath -NoQualifier -Resolve:$Resolve
+
+        while($from -and $to -and ($from -ne $to)) {
+            if($from.Length -gt $to.Length) {
+                $from = split-path $from
+            } else {
+                $to = split-path $to
+            }
+        }
+
+        $filepath = $filepath -replace "^"+[regex]::Escape($to)+"\\"
+        $from = $Folder
+        while($from -and $to -and $from -gt $to ) {
+            $from = split-path $from
+            $filepath = join-path ".." $filepath
+        }
+        if(($filepath -like ".\*") -or ($filepath -like "..\*") ) { Write-Output "$filepath" }
+        else { Write-Output ".\$filepath" }
     }
 }
-New-Alias -Name RelativePath -value Relative-Path -Description "" -Force
 
 function Full-Path{
    param(
@@ -77,7 +113,7 @@ function Core-RemoveFolder{
 	}
 	else{
 		if(test-path $path){
-			write-host "remove: $path" 
+			write-host "remove: $(Get-RelativePath (fullpath .) $path)" 
 			remove-item -force -recurse $path -ErrorAction SilentlyContinue | Out-Null
 		}
 	}

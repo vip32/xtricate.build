@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
      <id>xtricate.build</id>
-    <version>0.10.10311.1301</version>
+    <version>0.10.10321.1262</version>
     <authors>vip32</authors>
     <owners>vip32</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

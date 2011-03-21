@@ -45,12 +45,12 @@ function Uninstall-Environment {
 	)
     Write-Host "$($environment.type): $($environment.name) [$($environment.id)]"
 	foreach($node in $environment.nodes()){
-		if($env:COMPUTERNAME -like $node.name){
+		if(comparenodes $env:COMPUTERNAME $($node.name)){ 
             if(!($node.skipuninstall)){
                 Write-Host "`n$($node.type): $env:COMPUTERNAME [$($node.id)] $($node.name), $($node.ip)"
                 $node.UnInstall($tags)
                 foreach($package in $node.packages()){
-                    if(!($package.skipuninstall) -and (comparetags $tags $package.tags)){
+                    if(!($package.skipuninstall) -and !($package.skipinstallcopy) -and ($package.path -ne $null) -and (comparetags $tags $package.tags)){
                         Write-Host "remove $($package.type): $($package.name) [$($package.id)] > $($package.path)"
                         if(Test-Path $package.path){ Remove-Item -Path $package.path -Force -Recurse }
                     }
