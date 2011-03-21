@@ -158,6 +158,87 @@ function LocalIdentity {
 	}
 }
 
+function Certificate {
+	param (
+			[Parameter(Position=0,Mandatory=1)]
+			[string] $id,
+			[Parameter(Position=1,Mandatory=1)]
+			[string] $name,
+            [Parameter(Position=2,Mandatory=0)]
+			[string] $path,
+            [Parameter(Mandatory=0)]
+            [string] $description = $null,
+            [Parameter(Mandatory=0)]
+            [string] $password = $null,
+            [Parameter(Mandatory=0)]
+            [string] $thumbprint = $null,
+            [switch] $localMachine = $true,
+		    [switch] $currentUser = $false,
+            [Parameter(Mandatory=0)]
+            [string[]] $storenames = @("My"),
+            [Parameter(Mandatory=0)]
+            [switch] $skipuninstall = $false,
+            [Parameter(Mandatory=0)]
+			[scriptblock] $settings = $null,
+            [Parameter(Mandatory=0)]
+			[string[]] $dependson = @(),
+			[Parameter(Mandatory=0)]
+			[string[]] $tags = @()
+	)
+	New-Module -ArgumentList $id, $name, $path, $description, $password, $thumbprint, $localMachine, $currentUser, $storenames, $skipinstall, $skipuninstall, $settings, $dependson, $tags -AsCustomObject {
+		param ( $id, $name, $path, $description, $password, $thumbprint, $localMachine, $currentUser, $storenames, $skipinstall, $skipuninstall, $settings, $dependson, $tags )
+		$type = "certificate"
+        
+        if($settings -ne $null){ $_settings = &$settings }
+        
+        function Settings {
+			&$settings
+		}
+		
+		function List {
+		}
+        
+		function Install {
+            if(!($skipinstall)){
+                Write-Host "$($type): $name [$id]"
+                if(Test-Path $path){
+                    Import-Certificate -certfile (Get-Item $path) -storenames $storenames -certpassword $password -localmachine:$localMachine -currentuser:$currentUser
+                }
+                else{
+                    Write-Warning "certificate $name [$id] not found: $path"
+                }
+            }
+        }
+		
+		function UnInstall {
+            if(!($skipuninstall)){
+                Write-Host "$($type): $name [$id]"
+                # todo, not implemented yet
+            }
+		}
+        
+        function Documentation {
+            $settingstable = Format-Textile "table{border:1px solid black}.
+                                            |_<. setting |_<. value |
+                                            | identity resource | ""$($identityref)"":$($identityref) |
+                                            | classic| $classic |"
+            "## resource - $($type) '$($name)' [$($id)]
+            $($settingstable)<br>"
+        }
+        
+		function ToString(){
+			"`n    | $type [$id]: name=$name"
+       
+            if($_settings -ne $null){
+                foreach($setting in $_settings){
+                    $setting.tostring() 
+                }
+            }
+		}
+		Export-ModuleMember -Function Documentation, ToString, Settings, List, Install, UnInstall -Variable type, id, name, path, description, password, thumbprint, localMachine, currentUser, storenames, skipinstall, skipuninstall, dependson, tags, _settings
+	}
+}
+
 function AppPool {
 	param (
 			[Parameter(Position=0,Mandatory=1)]
@@ -269,6 +350,8 @@ function WebSite {
 			[Parameter(Mandatory=0)]
 			[switch] $ssl,
             [Parameter(Mandatory=0)]
+			[string] $certificateref = $null,
+            [Parameter(Mandatory=0)]
             [string] $description = $null,
             [Parameter(Mandatory=0)]
             [switch] $skipinstall = $false,
@@ -277,12 +360,12 @@ function WebSite {
             [Parameter(Mandatory=0)]
 			[scriptblock] $settings = $null,
             [Parameter(Mandatory=0)]
-			[string[]] $dependson = @("apppool"),
+			[string[]] $dependson = @("apppool","certificate"),
 			[Parameter(Mandatory=0)]
 			[string[]] $tags = @()
 	)
-	New-Module -ArgumentList $id, $name, $apppoolref, $path, $hostheader, $port, $sslport, $ssl, $description, $skipinstall, $skipuninstall, $settings, $dependson, $tags -AsCustomObject {
-		param ( $id, $name, $apppoolref, $path, $hostheader, $port, $sslport, $ssl, $description, $skipinstall, $skipuninstall, $settings, $dependson, $tags )
+	New-Module -ArgumentList $id, $name, $apppoolref, $path, $hostheader, $port, $sslport, $ssl, $certificateref, $description, $skipinstall, $skipuninstall, $settings, $dependson, $tags -AsCustomObject {
+		param ( $id, $name, $apppoolref, $path, $hostheader, $port, $sslport, $ssl, $certificateref, $description, $skipinstall, $skipuninstall, $settings, $dependson, $tags )
 		$type = "website"
         
         if(!($apppoolref)){ $dependson = @()} # todo : remove only apppool dependson
@@ -307,6 +390,15 @@ function WebSite {
                     $apppoolname = $($apppool.name)
                 }
                 New-Website -Name $name -PhysicalPath (fullpath $path) -Hostheader $hostheader -Port $port -ApplicationPool $apppoolname -Force | Out-Null
+                
+                if($certificateref){
+                    $certificate = Get-NodeResource $certificateref
+                    $thumbprint = $certificate.thumbprint
+                    New-WebBinding -Name $name -IP "*" -Port 443 -Protocol https
+                    Set-Location IIS:\SslBindings
+                    Get-ChildItem cert:\LocalMachine\My | Where-Object {$_.ThumbPrint -eq $thumbprint} | Select-Object -First 1 | New-Item 0.0.0.0!443
+                }
+                
                 Start-Website -Name $name 
                 #$state = Get-WebURL -PSPath "IIS:\Sites\$name" 
                 #Write-Host "    state: $state"
@@ -359,7 +451,7 @@ function WebSite {
                 }
             }
 		}
-		Export-ModuleMember -Function Documentation, ToString, Settings, FullUrl, List, Install, UnInstall -Variable type, id, apppoolref, path, hostheader, name, ip, port, sslport, description, skipinstall, skipuninstall, dependson, tags, _settings
+		Export-ModuleMember -Function Documentation, ToString, Settings, FullUrl, List, Install, UnInstall -Variable type, id, apppoolref, path, hostheader, name, ip, port, sslport, certificateref, description, skipinstall, skipuninstall, dependson, tags, _settings
 	}
 }
 #New-Alias -Name website -value New-WebSite -Description "" -Force

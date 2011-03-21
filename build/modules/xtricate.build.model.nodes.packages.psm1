@@ -144,6 +144,8 @@ function WebAppPackage {
                     else{
                         New-WebVirtualDirectory -Name $virtualdir -PhysicalPath (fullpath $path) -Site $website.name -Force | Out-Null
                     }
+                    
+                    # todo : add sslbinding > http://forums.iis.net/p/1174121/1965063.aspx
                 }
                 else{
                     # todo : update path of allready created website

@@ -35,6 +35,10 @@ configuration `
                             -identityref "administrator" `
                             -tags "all"
 
+                        certificate "websslcert" "web ssl certificate" `
+                            -path ".\assets\demo_local.pfx" -password "password" `
+                            -thumbprint "9061152f2ecd0dcd1cf5bd2bce2219a5da113469" -tags "all"
+
                         apppool "defaultapppool" "DefaultAppPool" `
                             -skipinstall -skipuninstall -tags "all"
 
@@ -50,6 +54,7 @@ configuration `
 							-path "c:\inetpub\wwwroot" `
                             -apppoolref "defaultapppool" `
                             -hostheader "www.demosite.local" `
+                            -certificateref "websslcert" `
                             -settings { setting "demosetting" "local" } `
                              -tags "all", "sites"
                     } `

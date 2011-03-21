@@ -236,4 +236,18 @@ function GetOutput
     $outputBuffer
 }
 
+function GetServerNames( 
+    [parameter(Mandatory=$true)][ValidateNotNullOrEmpty()]
+    [string] $dnsName)
+{
+    $dnsDetails = [System.Net.Dns]::GetHostEntry($dnsName)
+    
+    # Show each machine the dns name points to
+    foreach ($ipAddress in $dnsDetails.AddressList)
+    {
+        $hostDetails = [System.Net.Dns]::GetHostEntry($ipAddress)
+        Write-Host($hostDetails.HostName)
+    }
+}
+
 Export-Modulemember -alias * -Function *
