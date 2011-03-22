@@ -14,25 +14,25 @@ src\demo* demonstrates a buildable and deployable solution using these xtricate.
 
 ### how can i use xtricate.build in my projects :
 * copy the build folder to the root of your branch. 
-* create a default.ps1 specfic for your project, modify the properties.
-* create a default.model.ps1 specific for your environment.
+* create a default.ps1 specfic for your project, modify the properties if needed.
+* create a default.model.ps1 specific for your environment, start with a 'local' environment.
 * run psake.cmd with the appropriate task.
 
 ### usage examples
 > .\psake.cmd package
-> - initiates the creation of the output packages
+> - initiates the creation of the output packages, does a complete build.
 >
 > .\psake.cmd templatelocal
-> - expands all templates in the sources folder
+> - expands all templates (.template) in the local sources folder for the local environment.
 >   
 > .\psake.cmd packageinstall 
-> - initiates the creation of the output packages and installs them on the current node
+> - initiates the creation of the output packages and installs them on the current node, does a complete build
 >
 > .\psake.cmd remotepackageinstall -environment test -nodes nodeX -tags all
-> -  installs the packages matching the tags on the remote node. before installing all templates are expanded for the givven environment
+> -  installs the packages matching the tags on the remote node. before installing all templates are expanded for the specified environment.
 
 ### environment model introduction
-xtricate.build relies heavily on an environment model, like a dsl, which contains all the environments important for my project. 
+xtricate.build relies heavily on an environment model (the model), like a dsl, which contains all the environments important for the project. 
 examples of environments are : the local development workstation, a test or production environment. xtricate.build can manage the deployment of your project
 through  all these environment. the environment model file to use is specified within the properties of the psake buildfile.
 
