@@ -99,8 +99,8 @@ or, let xtricate.build handle everything. building, copying and installation on 
 * **[nuget](http://nuget.org/List/Packages/xtricate.build)**
 
 ### some modules are based on work by:
-* ang3lfir3/chewie : nuget package management
-* **[soever](http://weblogs.asp.net/soever)** : expand templates
+* **[chewie](https://github.com/Ang3lFir3/Chewie)** : nuget package management
+* **[soever](http://weblogs.asp.net/soever/archive/2006/12/31/a-templating-engine-using-powershell-expressions.aspx)** : template engine
 * **[poshcode.org](http://poshcode.org)** : various scripts
 
 xtricate.build contains a modified version of **[psake](http://github.com/JamesKovacs/psake)** by James Kovacs. some small
