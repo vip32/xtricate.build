@@ -100,7 +100,8 @@ or, let xtricate.build handle everything. building, copying and installation on 
 
 ### some modules are based on work by:
 * ang3lfir3/chewie : nuget package management
-* 
+* **[soever](http://weblogs.asp.net/soever)** : expand templates
+* **[poshcode.org](http://poshcode.org)** : various scripts
 
 xtricate.build contains a modified version of **[psake](http://github.com/JamesKovacs/psake)** by James Kovacs. some small
 improvements in module loading were made.
