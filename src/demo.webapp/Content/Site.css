@@ -5,31 +5,30 @@ to use a different color start by replacing all instances of
 ----------------------------------------------------------*/
 body
 {
-    background-color: #5c87b2;
+    background-color: #000000;
     font-size: 75%;
     font-family: Verdana, Tahoma, Arial, "Helvetica Neue", Helvetica, Sans-Serif;
     margin: 0;
     padding: 0;
-    color: #696969;
+    color: #000000;
 }
 
 a:link
 {
-    color: #034af3;
+    color: #000000;
     text-decoration: underline;
 }
 a:visited
 {
-    color: #505abc;
+    color: #000000;
 }
 a:hover
 {
-    color: #1d60ff;
-    text-decoration: none;
+    color: #000000;
 }
 a:active
 {
-    color: #12eb87;
+    color: #000000;
 }
 
 p, ul
@@ -158,7 +157,7 @@ ul#menu li a
     text-decoration: none;
     line-height: 2.8em;
     background-color: #e8eef4;
-    color: #034af3;
+    color: #000000;
 }
 
 ul#menu li a:hover
