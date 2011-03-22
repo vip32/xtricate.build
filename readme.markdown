@@ -24,17 +24,22 @@ xtricate.build is a psake build and deployment extension.
 * run psake.cmd with the appropriate task.
 
 ### basic usage examples
+
 > .\psake.cmd package
-> - initiates the creation of the output packages, does a complete build.
->
+
+initiates the creation of the output packages, does a complete build.
+
 > .\psake.cmd templatelocal
-> - expands all templates (.template) in the sources folder for the local environment.
->   
+
+expands all templates (.template) in the sources folder for the local environment.
+   
 > .\psake.cmd packageinstall 
-> - initiates the creation of the output packages and installs them on the current node, does a complete build
->
+
+initiates the creation of the output packages and installs them on the current node, does a complete build
+
 > .\psake.cmd remotepackageinstall -environment test -nodes nodeX -tags all
-> -  installs the packages matching the tags on the remote node. before installing all templates are expanded for the specified environment.
+
+installs the packages matching the tags on the remote node. before installing all templates are expanded for the specified environment.
 
 ### environment model introduction
 xtricate.build relies heavily on an environment model (the model), like a dsl, which contains all the environments important for the project. 
@@ -91,7 +96,7 @@ or, let xtricate.build handle everything. building, copying and installation on 
 * specflow
 * watin
 * nunit
-* nuget
+* **[nuget](http://nuget.org/List/Packages/xtricate.build)**
 
 ### some modules are based on work by:
 * ang3lfir3/chewie : nuget package management

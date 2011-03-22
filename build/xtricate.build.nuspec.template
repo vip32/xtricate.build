@@ -7,7 +7,8 @@
     <owners>vip32</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>xtricate.build is a psake build and deployment extension</description>
-    <tags>psake build deploy</tags>
+	<projectUrl>https://github.com/vip32/xtricate.build</projectUrl>
+    <tags>psake powershell build deploy configuration</tags>
   </metadata>
   <files>
     <file src="modules\**\*.*" target="build\modules" />
