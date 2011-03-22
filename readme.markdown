@@ -4,7 +4,7 @@ xtricate.build
 xtricate.build is a psake build and deployment extension. 
 
 ## demonstration
-.\src\demo* contains a buildable and deployable .net 4 solution using these xtricate.build extensions
+`.\src\demo*` contains a buildable and deployable .net 4 solution using these xtricate.build extensions
 
 ### xtricate.build features : 
 * environment management
@@ -18,10 +18,10 @@ xtricate.build is a psake build and deployment extension.
 * non obtrusive to your project or environment
 
 ### how can i use xtricate.build in my projects :
-* copy the .\build folder to the root of your branch. 
-* create a default.ps1 specific for your projects, modify the properties if needed.
-* create a default.model.psm1 specific for your environment, start with a 'local' environment.
-* run psake.cmd with the appropriate task.
+* copy the `.\build` folder to the root of your branch. 
+* create a `default.ps1` specific for your projects, modify the properties if needed.
+* create a `default.model.psm1` specific for your environment, start with a 'local' environment.
+* run `psake.cmd` with the appropriate task.
 
 ### basic usage examples
 
@@ -50,7 +50,7 @@ for all these environments. the model file to use is specified within the proper
 > $modelfile=resolvedefaultmodel
 > ...
 
-the defaultmodel function resolves to 'default.model.psm1' if the psake buildfile used is named 'default.ps1'.
+the defaultmodel function resolves to `default.model.psm1` if the psake buildfile used is named `default.ps1`.
 an environment consists of nodes (e.g. computers, load balancers). each node has resources and packages assigned to it
 * a resource is something that will be there or must be created (e.g. accounts, apppools, websites, certificates).
 * a package is something that is created by your project, for example : webapplication, folders, webservices, console apps, scheduled tasks, windows services
@@ -74,7 +74,7 @@ an environment consists of nodes (e.g. computers, load balancers). each node has
 			
 ### local and remote project installation
 
-the contents of the build folder contains everything needed for deployment on any node within an environment. 
+the contents of the `.\build` folder contains everything needed for deployment on any node within an environment. 
 starting with the following command to create the output packages :
 
 > .\psake.cmd package
