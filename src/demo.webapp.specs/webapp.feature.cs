@@ -54,22 +54,18 @@ namespace demo.webapp.specs
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Add two numbers")]
-        [NUnit.Framework.CategoryAttribute("mytag")]
-        public virtual void AddTwoNumbers()
+        [NUnit.Framework.DescriptionAttribute("Navigation to home page")]
+        public virtual void NavigationToHomePage()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Add two numbers", new string[] {
-                        "mytag"});
-#line 7
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Navigation to home page", ((string[])(null)));
+#line 6
 this.ScenarioSetup(scenarioInfo);
+#line 7
+   testRunner.When("I navigate to home");
 #line 8
- testRunner.Given("I have entered 50 into the calculator");
+   testRunner.Then("I should be on the home page");
 #line 9
- testRunner.And("I have entered 70 into the calculator");
-#line 10
- testRunner.When("I press add");
-#line 11
- testRunner.Then("the result should be 120 on the screen");
+   testRunner.Then("I should see the text equal to \"validatestring\"");
 #line hidden
             testRunner.CollectScenarioErrors();
         }

@@ -3,9 +3,7 @@
 	As a math idiot
 	I want to be told the sum of two numbers
 
-@mytag
-Scenario: Add two numbers
-	Given I have entered 50 into the calculator
-	And I have entered 70 into the calculator
-	When I press add
-	Then the result should be 120 on the screen
+Scenario: Navigation to home page
+   When I navigate to home
+   Then I should be on the home page
+   Then I should see the text equal to "validatestring"

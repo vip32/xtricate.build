@@ -26,12 +26,18 @@
 }
 New-Alias -Name GetSetting -value Get-Setting -Description "" -Force
 
+function Get-Environment {
+    return $psake.build_configuration_environment
+}
+New-Alias -Name GetEnvironment -value Get-Environment -Description "" -Force
+
 function Get-NodeResource {
     param(
         [Parameter(Position=0,Mandatory=1)]
         [string] $resourceid,
 		[switch] $throwerror = $true,
-        [switch] $returnnode = $false
+        [switch] $returnnode = $false,
+        [switch] $returnenvironment = $false
     )
     Write-Verbose "getting node resource with id $resourceid"
     foreach($node in $psake.build_configuration_environment._nodes){

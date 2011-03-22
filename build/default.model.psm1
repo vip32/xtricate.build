@@ -19,6 +19,7 @@ configuration `
                 ** systemtests" `
             -settings { 
                 setting "debug" "true"
+                setting "appsetting1" "localappsettingvalue"
                 dynamicsetting "dynamiccount2" { 5..9 } 
             } `
             -nodes {
@@ -32,7 +33,7 @@ configuration `
                         tempor invidunt ut labore et dolore magna aliquyam erat." `
                     -resources {
                         remoting -id "remoting" -localdirectory "c:\releases" `
-                            -identityref "administrator" `
+                            -identityref "remoteadmin" `
                             -tags "all"
 
                         certificate "websslcert" "web ssl certificate" `
@@ -41,6 +42,10 @@ configuration `
 
                         apppool "defaultapppool" "DefaultAppPool" `
                             -skipinstall -skipuninstall -tags "all"
+
+                        localidentity "remoteadmin" "remoteadmin" `
+                            -password "Password123" `
+                            -tags "all"
 
                         localidentity "networkservice" "networkservice" `
                             -skipinstall -skipuninstall -tags "all"
