@@ -65,7 +65,9 @@ this.ScenarioSetup(scenarioInfo);
 #line 8
    testRunner.Then("I should be on the home page");
 #line 9
-   testRunner.Then("I should see the text equal to \"validatestring\"");
+   testRunner.Then("I should see the text equal to appsetting \"validatestring\"");
+#line 10
+   testRunner.Then("I should see the text equal to \"www.worldtimeserver.com\"");
 #line hidden
             testRunner.CollectScenarioErrors();
         }

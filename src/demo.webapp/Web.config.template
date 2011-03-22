@@ -7,7 +7,10 @@
     </connectionStrings>
 
     <appSettings>
-        <add key="appsetting1" value="[[getsetting 'appsetting1']]"/>
+        <add key="worldtimeserverurl" value="[[getsetting 'worldtimeserverurl']]"/>
+        <add key="setting1" value="[[getsetting 'setting1']]"/>
+        <add key="setting2" value="[[getsetting 'setting2']]"/>
+        <add key="setting3" value="[[getsetting 'setting3']]"/>
         <add key="ClientValidationEnabled" value="true"/>
         <add key="UnobtrusiveJavaScriptEnabled" value="true"/>
     </appSettings>

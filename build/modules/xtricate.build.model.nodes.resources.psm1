@@ -462,7 +462,6 @@ function WebSite {
 		Export-ModuleMember -Function Documentation, ToString, Settings, FullUrl, List, Install, UnInstall -Variable type, id, apppoolref, path, hostheader, name, ip, port, sslport, certificateref, description, skipinstall, skipuninstall, dependson, tags, _settings
 	}
 }
-#New-Alias -Name website -value New-WebSite -Description "" -Force
 
 function HostsFile {
 	param (

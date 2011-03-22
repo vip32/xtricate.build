@@ -1,9 +1,7 @@
 configuration `
     -settings {
-        setting "username" "userX"
-        setting "google_url" "http://www.google.com"
-        dynamicsetting "dynamiccount" { 1..5 }
-        dynamicsetting "Password" { GeneratePassword }
+        setting "worldtimeserverurl" "http://www.worldtimeserver.com"
+        dynamicsetting "setting3" { GeneratePassword }
     } `
     -environments { 
         environment "local" `
@@ -19,14 +17,16 @@ configuration `
                 ** systemtests" `
             -settings { 
                 setting "debug" "true"
-                setting "appsetting1" "localappsettingvalue"
-                dynamicsetting "dynamiccount2" { 5..9 } 
+                setting "setting1" "localappsettingvalue"
+                dynamicsetting "setting2" { 1..5 } 
             } `
             -nodes {
                 #loadbalancer "lb1" "internetloadbalancer" `
                 #    -url "www.xportalmvc.com" `
                 #    -skipinstall -skipuninstall
-                                
+                node "internet" `
+                    -name "somewhereoutthere"
+                    
                 computer "webserver" `
                     -name @("PC*","BDS*") -ip "127.0.0.1" -domain "localhost" `
                     -description "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
@@ -69,7 +69,7 @@ configuration `
                         } -tags "all"
                     } `
                     -packages {
-                        databasepackage "demo.app" "demo console app" `
+                        genericpackage "demo.app" "demo console app" `
                             -path "..\src\demo.app" `
                             -skipinstallcopy -tags "all" 
                             

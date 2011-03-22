@@ -1,4 +1,4 @@
-function Computer {
+function Node {
 	param (
 			[Parameter(Position=0,Mandatory=1)]
 			[string] $id = $null,
@@ -23,7 +23,7 @@ function Computer {
 	)
 	New-Module -ArgumentList $id, $name, $ip, $domain, $description, $skipinstall, $skipuninstall, $resources, $packages, $settings -AsCustomObject {
 		param ( $id, $name, $ip, $domain, $description, $skipinstall, $skipuninstall, $resources, $packages, $settings )	
-		$type = "computer"
+		$type = "node"
 
         if($resources -ne $null){ $_resources = &$resources }
         if($packages -ne $null){ $_packages = &$packages }
@@ -44,17 +44,21 @@ function Computer {
                 [String[]] $tags = $null
             )
             if(!($skipinstall)){
-                Get-Resources-TopologicalSort $_resources | foreach {
-                    foreach($resource in $_resources) { 
-                        if($resource.type -eq $_){ 
-                            if(comparetags $tags $resource.tags){ $resource.Install() }
+                if($_resources){
+                    Get-Resources-TopologicalSort $_resources | foreach {
+                        foreach($resource in $_resources) { 
+                            if($resource.type -eq $_){ 
+                                if(comparetags $tags $resource.tags){ $resource.Install() }
+                            }
                         }
                     }
                 }
-                Get-Packages-TopologicalSort $_packages | foreach {
-                    foreach($package in $_packages) { 
-                        if($package.id -eq $_){ 
-                           if(comparetags $tags $package.tags){ $package.Install() }
+                if($_packages){
+                    Get-Packages-TopologicalSort $_packages | foreach {
+                        foreach($package in $_packages) { 
+                            if($package.id -eq $_){ 
+                            if(comparetags $tags $package.tags){ $package.Install() }
+                            }
                         }
                     }
                 }
@@ -66,17 +70,21 @@ function Computer {
                 [String[]] $tags = $null
             )
             if(!($skipuninstall)){
-                Get-Packages-TopologicalSort $_packages -reverse | foreach {
-                    foreach($package in $_packages) { 
-                        if($package.id -eq $_){ 
-                            if(comparetags $tags $package.tags){ $package.Uninstall() }
+                if($_packages){
+                    Get-Packages-TopologicalSort $_packages -reverse | foreach {
+                        foreach($package in $_packages) { 
+                            if($package.id -eq $_){ 
+                                if(comparetags $tags $package.tags){ $package.Uninstall() }
+                            }
                         }
                     }
                 }
-                Get-Resources-TopologicalSort $_resources -reverse | foreach {
-                    foreach($resource in $_resources) {
-                        if($resource.type -eq $_){ 
-                            if(comparetags $tags $resource.tags){ $resource.Uninstall() }
+                if($_resources){
+                    Get-Resources-TopologicalSort $_resources -reverse | foreach {
+                        foreach($resource in $_resources) {
+                            if($resource.type -eq $_){ 
+                                if(comparetags $tags $resource.tags){ $resource.Uninstall() }
+                            }
                         }
                     }
                 }
@@ -134,7 +142,34 @@ $($packagestext)
 		Export-ModuleMember -Function Packages, Install, UnInstall, Resources, Settings, SmokeTest, Documentation, ToString -Variable type, id, name, description, ip, domain, skipinstall, skipuninstall, _resources, _packages, _settings
 	}
 }
-#New-Alias -Name computer -value New-Computer -Description "" -Force
+
+function Computer {
+    param (
+			[Parameter(Position=0,Mandatory=1)]
+			[string] $id = $null,
+			[Parameter(Position=1,Mandatory=1)]
+			[string[]] $name =  $null,
+			[Parameter(Position=2,Mandatory=0)]
+			[string[]] $ip = $null,
+			[Parameter(Position=3,Mandatory=0)]
+			[string[]] $domain = $null,
+            [Parameter(Mandatory=0)]
+		    [string] $description = $null,
+            [Parameter(Mandatory=0)]
+            [switch] $skipinstall = $false,
+            [Parameter(Mandatory=0)]
+            [switch] $skipuninstall = $false,
+            [Parameter(Mandatory=0)]
+			[scriptblock] $resources = $null,
+            [Parameter(Mandatory=0)]
+			[scriptblock] $packages = $null,
+            [Parameter(Mandatory=0)]
+			[scriptblock] $settings = $null
+	)
+    $node = Node -id $id -name $name -ip $ip -domain $domain -description $description -skipinstall:$skipinstall -skipuninstall:$skipuninstall -resource $resources -packages $packages -settings $settings
+    $node.type = "computer"
+    return $node
+}
 
 function LoadBalancer {
 	param (
@@ -218,7 +253,6 @@ $($packagestext)
 		Export-ModuleMember -Function Install, UnInstall, Resources, Settings, Documentation, ToString -Variable type, id, name, description, ip, url, port, sslport, ssl, skipinstall, skipuninstall, _resources, _settings
 	}
 }
-#New-Alias -Name computer -value New-Computer -Description "" -Force
 
 function get-lburl {
 	param (

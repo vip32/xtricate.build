@@ -6,4 +6,5 @@
 Scenario: Navigation to home page
    When I navigate to home
    Then I should be on the home page
-   Then I should see the text equal to "validatestring"
+   Then I should see the text equal to appsetting "validatestring"
+   Then I should see the text equal to "www.worldtimeserver.com"
