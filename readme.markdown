@@ -6,28 +6,42 @@ xtricate.build is a psake build and deployment extension.
 ## demonstration
 `.\src\demo*` contains a buildable and deployable .net 4 solution using these xtricate.build extensions
 
+    .\build
+		\assets						[demo project assets like certificates]
+		\modules					[xtricate.build psake modules]
+		\output						
+			\default.master			[demo project output packages appear here]
+		\tools						[xtricate.build tools like nunit and nuget]
+		default.ps1					[demo project psake file, the tasks]
+		default.model.psm1			[demo project model file, the environments]
+	.\lib							[demo project external libraries appear here]
+    .\src							[demo project solution]
+		\demo
+		...
+		\demo.webservices
+
 ### xtricate.build features : 
 * environment management
 * nuget package management
-* solution build
+* solution building (todo: dependson)
 * configuration and script templating
 * output packaging
-* local and remote deployment
+* local and remote deployments
 * html and diagram documentation
 * tag driven model execution
 * non obtrusive to your project or environment
 
 ### how can i use xtricate.build in my projects :
-* copy the `.\build` folder to the root of your branch. 
+* copy the `.\build` folder to the root of your branch, rename if you like. 
 * create a `default.ps1` specific for your projects, modify the properties if needed.
 * create a `default.model.psm1` specific for your environment, start with a 'local' environment.
-* run `psake.cmd` with the appropriate task.
+* run `psake.cmd task` from the `.\build` folder with the appropriate task.
 
 ### basic usage examples
 
 > .\psake.cmd package
 
-initiates the creation of the output packages, does a complete build.
+initiates the creation of the output packages, does a complete build and places the packages in the `.\output` folder.
 
 > .\psake.cmd templatelocal
 
@@ -41,7 +55,7 @@ initiates the creation of the output packages and installs them on the current n
 
 installs the packages matching the tags on the remote node. before installing all templates are expanded for the specified environment.
 
-### environment model introduction
+### model introduction
 xtricate.build relies heavily on an environment model (the model), like a dsl, which contains all the environments important for the project. 
 examples of environments are : the local development workstation, a test or production environment. xtricate.build can manage the deployment of your project
 for all these environments. the model file to use is specified within the properties of the psake buildfile.
@@ -61,8 +75,8 @@ an environment consists of nodes (e.g. computers, load balancers). each node has
             environment -id 'local' -name
                 settings
                 node 'localhost' -id -name
-                    resources -id -name -skipinstall -skipuninstall-tags
-                    packages -id -name -skipinstall -skipuninstall-tags
+                    resources -id -name -skipinstall -skipuninstall -tags
+                    packages -id -name -skipinstall -skipuninstall -tags
             environment -id 'test' -name
                 settings
                 node -id 'webserver' -name
@@ -71,7 +85,21 @@ an environment consists of nodes (e.g. computers, load balancers). each node has
                 node -id 'dbserver' -name
                     resources
             		package
-			
+					
+## the basic node resources `.\modules\xtricate.build.model.nodes.resouces.psm1`
+* remoting
+* certificate
+* apppool
+* localidentity
+* website
+* hostsfile 
+
+## the basic node packages `.\modules\xtricate.build.model.nodes.packages.psm1`
+* genericpackage
+* webapppackage
+* databasepackage
+* systemtestpackage
+
 ### local and remote project installation
 
 the contents of the `.\build` folder contains everything needed for deployment on any node within an environment. 
@@ -89,13 +117,21 @@ or, let xtricate.build handle everything. building, copying and installation on 
 
 > .\psake.cmd remotepackageinstall -environment test -nodes dev-srv-1
 
+### advanced usage examples
+
+> .\psake.cmd spectest -environment test -tags all
+
+runs all systemtestpackages within the `.\output` folder. the configuration templates are expanded for the specified environment, systemtests can be run anywhere.
+
 ### the demo solution uses the following tools and technologies :
 * microsoft visual studio 2010
 * microsoft asp.net mvc 3
 * microsoft sql ce 4.0
-* specflow
-* watin
-* nunit
+* specflow 1.5
+* watin 2.0
+* nunit 2.5.7
+* entityframework 4.1
+* iis7 (webadministration module)
 * **[nuget](http://nuget.org/List/Packages/xtricate.build)**
 
 ### some modules are based on work by:
