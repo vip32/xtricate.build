@@ -125,6 +125,7 @@ all template functions are used like `[[templatefunction -params]]` in the templ
 
 > connectionString="data source=[[fullpath (getnodepackagepath demo.db)]]\[[getnodepackagename demo.db]]"
 
+
 > compilation debug="[[getsetting 'debug']]" targetFramework="4.0"
 
 ## local and remote project installation
