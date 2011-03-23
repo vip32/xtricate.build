@@ -110,6 +110,7 @@ all files ending with `.template` are expanded to files without this suffix. a w
 
 ### the basic template functions `.\modules\xtricate.build.template.functions.psm1`
 all template functions are used like `[[templatefunction -params]]` in the template, regular powershell scripting is allowed too.
+
 * getsetting
 * getenvironment
 * getnoderesource
@@ -123,7 +124,8 @@ all template functions are used like `[[templatefunction -params]]` in the templ
 ### template examples
 
 > connectionString="data source=[[fullpath (getnodepackagepath demo.db)]]\[[getnodepackagename demo.db]]"
-> <compilation debug="[[getsetting 'debug']]" targetFramework="4.0">
+
+> compilation debug="[[getsetting 'debug']]" targetFramework="4.0"
 
 ## local and remote project installation
 
