@@ -3,7 +3,7 @@ xtricate.build
 
 xtricate.build is a psake build and deployment extension. 
 
-### xtricate.build features : 
+### features 
 * environment management
 * nuget package management
 * solution building (todo: dependson)
@@ -14,7 +14,7 @@ xtricate.build is a psake build and deployment extension.
 * tag driven model execution
 * non obtrusive to your project or environment
 
-### how can i use xtricate.build in my projects :
+### how can i use xtricate.build in my projects?
 * copy the `.\build` folder to the root of your branch, rename if you like. 
 * create a `.\build\default.ps1` specific for your projects, modify the properties if needed.
 * create a `.\build\default.model.psm1` specific for your environment, start with a 'local' environment.
