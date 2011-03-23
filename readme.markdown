@@ -21,7 +21,7 @@ xtricate.build is a psake build and deployment extension.
 * run `psake.cmd taskname(s)` from the `.\build` folder with the appropriate task(s).
 
 ### demonstration
-`.\src\demo*` contains a buildable and deployable .net 4 solution using these xtricate.build extensions
+`.\src\demo*` contains a buildable and deployable .net 4 solution using these xtricate.build extensions. 
 
     .\build
 		\assets						[demo project assets like certificates]
@@ -38,6 +38,7 @@ xtricate.build is a psake build and deployment extension.
 		\demo.webservices
 
 ### basic usage examples
+run the following commands from the `.\build` folder
 
 > .\psake.cmd package
 
@@ -87,7 +88,7 @@ an environment consists of nodes (e.g. computers, load balancers). each node has
             		package
 					
 ## the basic node resources `.\modules\xtricate.build.model.nodes.resouces.psm1`
-* remoting
+* remoting: configure the remote session for this node, used during remote installation
 * certificate
 * apppool
 * localidentity
@@ -99,6 +100,30 @@ an environment consists of nodes (e.g. computers, load balancers). each node has
 * webapppackage
 * databasepackage
 * systemtestpackage
+
+### template expansion
+the model serves as the basis for all kind of templating. templates are files which contain template functions and are expanded by executing the `template` or `templatelocal`
+tasks. 
+template expansion is not done on build or package time, the output folder with its packages does not contain expanded templates for each environment.
+for examples: the various install tasks depend on the template tasks, so template expansion is executed when needed.  
+all files ending with `.template` are expanded to files without this suffix. a web.config.template becomes a regular web.config this way.
+
+## the basic template functions `.\modules\xtricate.build.template.functions.psm1`
+all template functions are used like `[[templatefunction -params]]` in the template, regular powershell scripting is allowed too.
+* getsetting
+* getenvironment
+* getnoderesource
+* getnoderesources
+* getnoderesourcepath
+* getnodepackage
+* getnodepackagepath
+* getnodepackagename
+* getnodepackageurl
+
+## examples
+
+> connectionString="data source=[[fullpath (getnodepackagepath demo.db)]]\[[getnodepackagename demo.db]]"
+> <compilation debug="[[getsetting 'debug']]" targetFramework="4.0">
 
 ### local and remote project installation
 
@@ -118,10 +143,11 @@ or, let xtricate.build handle everything. building, copying and installation on 
 > .\psake.cmd remotepackageinstall -environment test -nodes dev-srv-1
 
 ### advanced usage examples
+run the following commands from the `.\build` folder
 
 > .\psake.cmd spectest -environment test -tags all
 
-runs all systemtestpackages within the `.\output` folder. the configuration templates are expanded for the specified environment, systemtests can be run anywhere.
+runs all spectest systemtestpackages within the `.\output` folder. the configuration templates are expanded for the specified environment, systemtests can be run anywhere.
 
 ### the demo solution uses the following tools and technologies :
 * microsoft visual studio 2010
