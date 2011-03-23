@@ -3,23 +3,6 @@ xtricate.build
 
 xtricate.build is a psake build and deployment extension. 
 
-## demonstration
-`.\src\demo*` contains a buildable and deployable .net 4 solution using these xtricate.build extensions
-
-    .\build
-		\assets						[demo project assets like certificates]
-		\modules					[xtricate.build psake modules]
-		\output						
-			\default.master			[demo project output packages appear here]
-		\tools						[xtricate.build tools like nunit and nuget]
-		default.ps1					[demo project psake file, the tasks]
-		default.model.psm1			[demo project model file, the environments]
-	.\lib							[demo project external libraries appear here]
-    .\src							[demo project solution]
-		\demo
-		...
-		\demo.webservices
-
 ### xtricate.build features : 
 * environment management
 * nuget package management
@@ -36,6 +19,23 @@ xtricate.build is a psake build and deployment extension.
 * create a `default.ps1` specific for your projects, modify the properties if needed.
 * create a `default.model.psm1` specific for your environment, start with a 'local' environment.
 * run `psake.cmd task` from the `.\build` folder with the appropriate task.
+
+### demonstration
+`.\src\demo*` contains a buildable and deployable .net 4 solution using these xtricate.build extensions
+
+    .\build
+		\assets						[demo project assets like certificates]
+		\modules					[xtricate.build psake modules]
+		\output						
+			\default.master			[demo project output packages appear here]
+		\tools						[xtricate.build tools like nunit and nuget]
+		default.ps1					[demo project psake file, the tasks]
+		default.model.psm1			[demo project model file, the environments]
+	.\lib							[demo project external libraries appear here]
+    .\src							[demo project solution]
+		\demo
+		...
+		\demo.webservices
 
 ### basic usage examples
 
