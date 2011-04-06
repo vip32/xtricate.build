@@ -19,6 +19,7 @@ function Install-Environment {
                             $exportlocation = "$($path)\$($package.id)"
                             if(Test-Path $exportlocation){
 	                            $fullexportlocation = Resolve-Path -Path $exportlocation
+								EnsureFolder $package.path
 	                            Get-ChildItem $exportlocation -Recurse | 
 	                                Copy-Item -Force -Destination { Join-Path $($package.path) $_.FullName.Substring($($fullexportlocation.path).length) }
 	                        }

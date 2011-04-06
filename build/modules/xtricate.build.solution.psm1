@@ -77,7 +77,7 @@ function Core-FirstSolutionFile{
         [string] $path = $(throw "path is a required parameter.")
     )
     if(Test-Path $path){ dir "$path\*" -include "*.sln" -recurse | select -first 1}
-    else{ throw "$path does not exist, cannot find solution."}
+	# else{ throw "$path does not exist, cannot find solution."}
 }
 New-Alias -Name FirstSolution -value Core-FirstSolutionFile -Description "" -Force
 
