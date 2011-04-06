@@ -45,7 +45,7 @@ configuration `
 
                         localidentity "remoteadmin" "remoteadmin" `
                             -password "Password123" `
-                            -tags "all"
+                            -skipuninstall -tags "all"
 
                         localidentity "networkservice" "networkservice" `
                             -skipinstall -skipuninstall -tags "all"
@@ -76,6 +76,9 @@ configuration `
 						databasepackage "demo.db" "demodatabase1_local.sdf" `
                             -description "demo database for local environment" `
                             -path "..\src\demo.db" `
+							-permissions {
+								permissionrule -filter "*.sdf" -groups "Users" @("Read", "Write")
+							}`
                             -skipinstallcopy -tags "all" 
                             
                         webapppackage "demo.webapp" "demo web application" `
@@ -141,7 +144,7 @@ configuration `
 
                         localidentity "remoteadmin" "remoteadmin" `
                             -password "Password123" `
-                            -tags "all"
+                            -skipuninstall -tags "all"
 
                         localidentity "networkservice" "networkservice" `
                             -skipinstall -skipuninstall -tags "all"
@@ -172,8 +175,11 @@ configuration `
 						databasepackage "demo.db" "demodatabase1_test.sdf" `
                             -description "demo database for test environment" `
                             -path "c:\demo\demo.db" `
+							-permissions {
+								allowpermission -filter "*.sdf" -groups "Users" @("Read", "Write")
+							}`
                             -tags "all" 
-                            
+						
                         webapppackage "demo.webapp" "demo web application" `
                             -path "c:\demo\demo.webapp" `
                             -websiteref "demosite" `

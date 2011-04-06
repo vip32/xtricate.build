@@ -14,6 +14,8 @@ function GenericPackage {
             [switch] $skipinstallcopy = $false,
             [Parameter(Mandatory=0)]
             [switch] $skipuninstall = $false,
+			[Parameter(Mandatory=0)]
+			[scriptblock] $permissions = $null,
             [Parameter(Mandatory=0)]
 			[scriptblock] $settings = $null,
 			[Parameter(Mandatory=0)]
@@ -21,8 +23,8 @@ function GenericPackage {
 			[Parameter(Mandatory=0)]
 			[string[]] $tags = @()
 	)
-	New-Module -ArgumentList $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $settings, $dependson, $tags -AsCustomObject {
-		param ( $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $settings, $dependson, $tags )
+	New-Module -ArgumentList $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $permissions, $settings, $dependson, $tags -AsCustomObject {
+		param ( $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $permissions, $settings, $dependson, $tags )
 		$type = "genericpackage"
         
         if($settings -ne $null){ $_settings = &$settings }
@@ -36,15 +38,20 @@ function GenericPackage {
 		
 		function Install {
             if(!($skipinstall)){
-                Write-Host "$($type): $name [$id]" 
+                Write-Host "$($type): $name [$id] $path" 
                 # execute all sql scripts in the versioned order
                 # set new db version as metadata on sql db
+				
+				if($permissions -ne $null){ 
+					$_permissions = &$permissions
+					$_permissions | foreach{ $_.Install($path) }
+				}
             }
 		}
 		
 		function UnInstall {
             if(!($skipuninstall)){
-                Write-Host "$($type): $name [$id]" 
+                Write-Host "$($type): $name [$id] $path" 
             }
 		}
         
@@ -102,6 +109,8 @@ function WebAppPackage {
             [switch] $skipinstallcopy = $false,
             [Parameter(Mandatory=0)]
             [switch] $skipuninstall = $false,
+			[Parameter(Mandatory=0)]
+			[scriptblock] $permissions = $null,
             [Parameter(Mandatory=0)]
 			[scriptblock] $settings = $null,
 			[Parameter(Mandatory=0)]
@@ -109,8 +118,8 @@ function WebAppPackage {
 			[Parameter(Mandatory=0)]
 			[string[]] $tags = @()
 	)
-	New-Module -ArgumentList $id, $name, $path, $websiteref, $virtualdir, $isapplication, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $settings, $dependson, $tags -AsCustomObject {
-		param ( $id, $name, $path, $websiteref, $virtualdir, $isapplication, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $settings, $dependson, $tags )
+	New-Module -ArgumentList $id, $name, $path, $websiteref, $virtualdir, $isapplication, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $permissions, $settings, $dependson, $tags -AsCustomObject {
+		param ( $id, $name, $path, $websiteref, $virtualdir, $isapplication, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $permissions, $settings, $dependson, $tags )
 		$type = "webapppackage"
         
         if($settings -ne $null){ $_settings = &$settings }
@@ -125,7 +134,7 @@ function WebAppPackage {
 		
 		function Install {
             if(!($skipinstall)){
-                Write-Host "$($type): $name [$id]" 
+                Write-Host "$($type): $name [$id] $path" 
                 Load-WebAdmin
                 $website = Get-NodeResource $websiteref
                 
@@ -150,12 +159,17 @@ function WebAppPackage {
                 else{
                     # todo : update path of allready created website
                 }
+				
+				if($permissions -ne $null){ 
+					$_permissions = &$permissions
+					$_permissions | foreach{ $_.Install($path) }
+				}
             }
 		}
 		
 		function UnInstall {
             if(!($skipuninstall)){
-                Write-Host "$($type): $name [$id]" 
+                Write-Host "$($type): $name [$id] $path" 
                 Load-WebAdmin
                 if($virtualdir -ne $null){
                     #Remove-WebVirtualDirectory -Name $name > ask allways for confirmation
@@ -266,6 +280,8 @@ function WindowsServicePackage {
             [switch] $skipinstallcopy = $false,
             [Parameter(Mandatory=0)]
             [switch] $skipuninstall = $false,
+			[Parameter(Mandatory=0)]
+			[scriptblock] $permissions = $null,
             [Parameter(Mandatory=0)]
 			[scriptblock] $settings = $null,
 			[Parameter(Mandatory=0)]
@@ -273,8 +289,8 @@ function WindowsServicePackage {
 			[Parameter(Mandatory=0)]
 			[string[]] $tags = @()
 	)
-	New-Module -ArgumentList $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $settings, $dependson, $tags -AsCustomObject {
-		param ( $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $settings, $dependson, $tags )
+	New-Module -ArgumentList $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $permissions, $settings, $dependson, $tags -AsCustomObject {
+		param ( $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $permissions, $settings, $dependson, $tags )
 		$type = "windowsservicepackage"
         
         if($settings -ne $null){ $_settings = &$settings }
@@ -288,13 +304,18 @@ function WindowsServicePackage {
 		
 		function Install {
             if(!($skipinstall)){
-                Write-Host "$($type): $name [$id]" 
+                Write-Host "$($type): $name [$id] $path" 
             }
+			
+			if($permissions -ne $null){ 
+					$_permissions = &$permissions
+					$_permissions | foreach{ $_.Install($path) }
+				}
 		}
 		
 		function UnInstall {
             if(!($skipuninstall)){
-                Write-Host "$($type): $name [$id]" 
+                Write-Host "$($type): $name [$id] $path" 
             }
 		}
         
@@ -347,14 +368,16 @@ function DatabasePackage {
             [Parameter(Mandatory=0)]
             [switch] $skipuninstall = $false,
             [Parameter(Mandatory=0)]
+			[scriptblock] $permissions = $null,
+			[Parameter(Mandatory=0)]
 			[scriptblock] $settings = $null,
 			[Parameter(Mandatory=0)]
 			[string[]] $dependson = @(),
 			[Parameter(Mandatory=0)]
 			[string[]] $tags = @()
 	)
-	New-Module -ArgumentList $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $settings, $dependson, $tags -AsCustomObject {
-		param ( $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $settings, $dependson, $tags )
+	New-Module -ArgumentList $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $permissions, $settings, $dependson, $tags -AsCustomObject {
+		param ( $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $permissions, $settings, $dependson, $tags )
 		$type = "databasepackage"
         
         if($settings -ne $null){ $_settings = &$settings }
@@ -368,17 +391,22 @@ function DatabasePackage {
 		
 		function Install {
             if(!($skipinstall)){
-                Write-Host "$($type): $name [$id]" 
+                Write-Host "$($type): $name [$id] $path" 
                 # invoke-sqlcmd : sql server 2008 powershell cmndlets
                 # http://stackoverflow.com/questions/156044/how-do-you-manage-database-revisions-on-a-medium-sized-project-with-branches
                 # http://michielvoo.net/blog/configuring-migrator-net-as-an-external-tool-in-visual-studio-using-msbuild/
                 # dbdeploy.com
+				
+				if($permissions -ne $null){ 
+					$_permissions = &$permissions
+					$_permissions | foreach{ $_.Install($path) }
+				}
             }
 		}
 		
 		function UnInstall {
             if(!($skipuninstall)){
-                Write-Host "$($type): $name [$id]" 
+                Write-Host "$($type): $name [$id] $path" 
             }
 		}
         
@@ -429,6 +457,8 @@ function SystemTestPackage {
             [switch] $skipinstallcopy = $true,
             [Parameter(Mandatory=0)]
             [switch] $skipuninstall = $false,
+			[Parameter(Mandatory=0)]
+			[scriptblock] $permissions = $null,
             [Parameter(Mandatory=0)]
 			[scriptblock] $settings = $null,
 			[Parameter(Mandatory=0)]
@@ -436,8 +466,8 @@ function SystemTestPackage {
 			[Parameter(Mandatory=0)]
 			[string[]] $tags = @()
 	)
-	New-Module -ArgumentList $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $settings, $dependson, $tags -AsCustomObject {
-		param ( $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $settings, $dependson, $tags )
+	New-Module -ArgumentList $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $permissions, $settings, $dependson, $tags -AsCustomObject {
+		param ( $id, $name, $path, $description, $skipinstall, $skipinstallcopy, $skipuninstall, $permissions, $settings, $dependson, $tags )
 		$type = "systemtestpackage"
         
         if($settings -ne $null){ $_settings = &$settings }
@@ -451,13 +481,18 @@ function SystemTestPackage {
 		
 		function Install {
             if(!($skipinstall)){
-                Write-Host "$($type): $name [$id]"  
+                Write-Host "$($type): $name [$id] $path"  
             }
+			
+			if($permissions -ne $null){ 
+					$_permissions = &$permissions
+					$_permissions | foreach{ $_.Install($path) }
+				}
 		}
 		
 		function UnInstall {
             if(!($skipuninstall)){
-                Write-Host "$($type): $name [$id]" 
+                Write-Host "$($type): $name [$id] $path" 
             }
 		}
         
@@ -504,5 +539,57 @@ function SystemTestPackage {
 		Export-ModuleMember -Function Export, Documentation, ToString, Settings, List, Install, UnInstall -Variable type, id, name, path, description, skipinstall, skipinstallcopy, skipuninstall, dependson, tags, _settings
 	}
 }
+
+function PermissionRule {
+	param (
+			[Parameter(Position=0,Mandatory=1)]
+			[string] $filter = "*.*",
+			[Parameter(Position=1,Mandatory=1)]
+			[string[]] $groups = "",
+            [Parameter(Position=2,Mandatory=0)]
+			[string[]] $rights = @("Read", "Write"),
+			[switch] $allow = $true,
+			[switch] $deny = $false
+	)
+	New-Module -ArgumentList $filter, $groups, $rights -AsCustomObject {
+		param ( $filter, $groups, $rights )
+		$type = "permissionrule"
+        
+		function Install() {
+			param (
+                [string] $path = $null
+            )
+            if(!($skipinstall)){
+                Write-Host "$($type): $filter $groups [$rights] $path" 
+				Get-ChildItem -path (FullPath $path) -filter $filter -recurse | foreach {
+					foreach($group in $groups){
+						foreach($right in $rights){
+							$action = "Allow"
+							if($deny){ $action = "Deny"}
+							$acl = Get-Acl $_.FullName
+							$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, $action)
+							# $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, "ContainerInherit, ObjectInherit", "None", $action) # use this for folders
+							$acl.AddAccessRule($rule)
+							Set-Acl $_.FullName $acl
+						}
+					}
+				}
+            }
+		}
+		
+		function UnInstall {
+            if(!($skipuninstall)){
+            }
+		}
+        
+        function Documentation {
+        }
+
+		function ToString(){
+		}
+		Export-ModuleMember -Function Documentation, Install, uNInstall, ToString -Variable type, filter, groups, permissions
+	}
+}
+
 
 Export-Modulemember -alias * -Function *
