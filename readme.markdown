@@ -61,10 +61,12 @@ installs the packages matching the tags on the remote node. before installing al
 xtricate.build relies heavily on an environment model (the model), like a dsl, which contains all the environments important for the project. 
 examples of environments are : the local development workstation, a test or production environment. xtricate.build can manage the deployment of your project
 for all these environments. the model file to use is specified within the properties of the psake buildfile.
-
-	...
-	$modelfile=resolvedefaultmodel
-	...
+	
+	properties{
+		...
+		$modelfile=resolvedefaultmodel
+		...
+	}
 
 the defaultmodel function resolves to `default.model.psm1` if the psake buildfile used is named `default.ps1`.
 an environment consists of nodes (e.g. computers, load balancers). each node has resources and packages assigned to it
