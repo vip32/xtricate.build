@@ -3,16 +3,17 @@ xtricate.build
 
 xtricate.build is a psake build and deployment extension. 
 
-### features 
-* environment management
-* nuget package management
-* solution building (todo: dependson)
-* configuration and script templating
-* output packaging
-* local and remote deployments
-* html and diagram documentation
-* tag driven model execution
-* non obtrusive to your project or environment
+### some of the features 
+* environment management: control your environment and everything depending on it.
+* local and remote deployments: one way to deploy them all
+* output packaging: keep everything deployable in one place
+* configuration and script templating: the model knows everything, use it
+* tag based model execution: only install what you want or need
+* non obtrusive: no modifications to your projects needed
+* extensibility: change the model dsl with your own items
+* environment smoke testing: is your environment installed correctly?
+* html and diagram documentation: get an overview of your project and environment
+* nuget package management: use or publish packages with nuget
 
 ### how can i use xtricate.build in my projects?
 * copy the `.\build` folder to the root of your branch, rename if you like. 
@@ -100,6 +101,22 @@ an environment consists of nodes (e.g. computers, load balancers). each node has
 * webapppackage
 * databasepackage
 * systemtestpackage
+
+### solution packages
+packages in the model most often represent a project you are working on, to couple the model to a project location a 'solution.package.psm1' file is placed in the project folder. 
+this file contains the id of the package in the model. 
+
+> solutionpackage "demo.webapp" 
+
+an alternative way to do the project coupling is by modifying the 'loadmodel' functions in the 'model' and 'modellocal' tasks. in this way no 'solution.package.psm1' has to be placed in the project folder. 
+
+> loadmodel `
+>       -modelfile $modelfile `
+>       -environment $environment `
+>       -packagesPath $sources_dir `
+> 		-solutionpackages {
+> 			solutionpackage -packageid "demo.webservices" -name "demo.webservices" -location "$($sources_dir)\demo.webservices"
+> 		}
 
 ## template expansion
 the model serves as the basis for all kind of templating. templates are files which contain template functions and are expanded by executing the `template` or `templatelocal`

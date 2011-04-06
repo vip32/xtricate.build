@@ -393,10 +393,13 @@ function WebSite {
                     try{
                         $certificate = Get-NodeResource $certificateref
                         $thumbprint = $certificate.thumbprint
-                        New-WebBinding -Name $name -IP "*" -Port 443 -Protocol https | Out-Null
-                        Set-Location IIS:\SslBindings
-                        if(Test-Path 0.0.0.0!443){ Remove-Item 0.0.0.0!443 }
-                        Get-ChildItem cert:\LocalMachine\My | Where-Object {$_.ThumbPrint -eq $thumbprint} | Select-Object -First 1 | New-Item 0.0.0.0!443 | Out-Null
+                        $binding = Get-WebBinding -Name $name -Port $sslport -Protocol https -HostHeader $hostheader
+                        if(!$binding){
+                            New-WebBinding -Name $name -IP "*" -Port $sslport -Protocol https -Hostheader $hostheader | Out-Null
+                            Set-Location IIS:\SslBindings
+                            if(Test-Path 0.0.0.0!443){ Remove-Item 0.0.0.0!$($sslport) }
+                            Get-ChildItem cert:\LocalMachine\My | Where-Object {$_.ThumbPrint -eq $thumbprint} | Select-Object -First 1 | New-Item 0.0.0.0!$($sslport) | Out-Null
+                        }
                     }
                     catch{
                         Write-Warning "ssl cert error"

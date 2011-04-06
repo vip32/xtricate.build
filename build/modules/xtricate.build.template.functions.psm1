@@ -87,7 +87,7 @@ function Get-NodePackage {
 }
 New-Alias -Name GetNodePackage -value Get-NodePackage -Description "" -Force
 
-function Get-NodePackageName {
+function Get-NodePackageName { 
     param(
         [Parameter(Position=0,Mandatory=1)]
         [string] $packageid,
@@ -98,7 +98,7 @@ function Get-NodePackageName {
 New-Alias -Name GetNodePackageName -value Get-NodePackageName -Description "" -Force
 
 # get the node for the specified package
-function Get-NodePackage-Node {
+function Get-NodePackage-Node { # todo : allign with getnoderesource -returnnode
     param(
         [Parameter(Position=0,Mandatory=1)]
         [string] $packageid
