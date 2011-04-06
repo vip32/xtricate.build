@@ -62,9 +62,9 @@ xtricate.build relies heavily on an environment model (the model), like a dsl, w
 examples of environments are : the local development workstation, a test or production environment. xtricate.build can manage the deployment of your project
 for all these environments. the model file to use is specified within the properties of the psake buildfile.
 
-> ...
-> $modelfile=resolvedefaultmodel
-> ...
+	...
+	$modelfile=resolvedefaultmodel
+	...
 
 the defaultmodel function resolves to `default.model.psm1` if the psake buildfile used is named `default.ps1`.
 an environment consists of nodes (e.g. computers, load balancers). each node has resources and packages assigned to it
@@ -106,7 +106,7 @@ an environment consists of nodes (e.g. computers, load balancers). each node has
 packages in the model most often represent a project you are working on, to couple the model to a project location a 'solution.package.psm1' file is placed in the project folder. 
 this file contains the id of the package in the model. 
 
-> solutionpackage "demo.webapp" 
+	solutionpackage "demo.webapp" 
 
 an alternative way to do the project coupling is by modifying the 'loadmodel' functions in the 'model' and 'modellocal' tasks. in this way no 'solution.package.psm1' has to be placed in the project folder. 
 
