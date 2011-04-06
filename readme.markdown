@@ -110,13 +110,13 @@ this file contains the id of the package in the model.
 
 an alternative way to do the project coupling is by modifying the 'loadmodel' functions in the 'model' and 'modellocal' tasks. in this way no 'solution.package.psm1' has to be placed in the project folder. 
 
-> loadmodel `
->       -modelfile $modelfile `
->       -environment $environment `
->       -packagesPath $sources_dir `
-> 		-solutionpackages {
-> 			solutionpackage -packageid "demo.webservices" -name "demo.webservices" -location "$($sources_dir)\demo.webservices"
-> 		}
+	loadmodel `
+		-modelfile $modelfile `
+		-environment $environment `
+		-packagesPath $sources_dir `
+		-solutionpackages {
+			solutionpackage -packageid "demo.webservices" -name "demo.webservices" -location "$($sources_dir)\demo.webservices"
+		}
 
 ## template expansion
 the model serves as the basis for all kind of templating. templates are files which contain template functions and are expanded by executing the `template` or `templatelocal`
