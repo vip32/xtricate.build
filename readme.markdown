@@ -17,8 +17,8 @@ xtricate.build is a psake build and deployment extension.
 
 ### how can i use xtricate.build in my projects?
 * copy the `.\build` folder to the root of your branch, rename if you like. 
-* create a `.\build\default.ps1` specific for your projects, modify the properties if needed.
-* create a `.\build\default.model.psm1` specific for your environment, start with a 'local' environment.
+* create a `.\build\default.ps1` specific for your projects (psake), modify the properties and tasks if needed.
+* create a `.\build\default.model.psm1` specific for your environment (model), start with a 'local' environment.
 * run `psake.cmd taskname(s)` from the `.\build` folder with the appropriate task(s).
 
 ## demonstration
