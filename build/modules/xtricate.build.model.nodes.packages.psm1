@@ -543,37 +543,56 @@ function SystemTestPackage {
 function PermissionRule {
 	param (
 			[Parameter(Position=0,Mandatory=1)]
-			[string] $filter = "*.*",
-			[Parameter(Position=1,Mandatory=1)]
 			[string[]] $groups = "",
-            [Parameter(Position=2,Mandatory=0)]
+            [Parameter(Position=1,Mandatory=1)]
 			[string[]] $rights = @("Read", "Write"),
+			[Parameter(Position=2,Mandatory=0)]
+			[string] $filter,
 			[switch] $allow = $true,
 			[switch] $deny = $false
 	)
-	New-Module -ArgumentList $filter, $groups, $rights -AsCustomObject {
-		param ( $filter, $groups, $rights )
+	New-Module -ArgumentList $groups, $rights, $filter, $allow, $deny -AsCustomObject {
+		param ( $groups, $rights, $filter, $allow, $deny )
 		$type = "permissionrule"
         
 		function Install() {
 			param (
                 [string] $path = $null
             )
-            if(!($skipinstall)){
-                Write-Host "$($type): $filter $groups [$rights] $path" 
-				Get-ChildItem -path (FullPath $path) -filter $filter -recurse | foreach {
-					foreach($group in $groups){
-						foreach($right in $rights){
-							# http://blogs.technet.com/b/josebda/archive/2010/11/09/how-to-handle-ntfs-folder-permissions-security-descriptors-and-acls-in-powershell.aspx
-							$action = "Allow"
-							if($deny){ $action = "Deny"}
-							$acl = Get-Acl $_.FullName
-							$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, $action)
-							# $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, "ContainerInherit, ObjectInherit", "None", $action) # use this for folders
-							$acl.AddAccessRule($rule)
-							Set-Acl $_.FullName $acl
+            if(!($skipinstall -and $path)){
+				Write-Host "$($type): $groups [$rights] $path $filter" 
+				$path = FullPath $path
+				if(Test-Path $path){
+					if($filter){
+						Get-ChildItem -path (FullPath $path) -filter $filter -recurse | foreach {
+							foreach($group in $groups){
+								foreach($right in $rights){
+									# http://blogs.technet.com/b/josebda/archive/2010/11/09/how-to-handle-ntfs-folder-permissions-security-descriptors-and-acls-in-powershell.aspx
+									$action = "Allow"
+									if($deny){ $action = "Deny"}
+									$acl = Get-Acl $_.FullName
+									$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, $action)
+									$acl.AddAccessRule($rule)
+									Set-Acl $_.FullName $acl
+								}
+							}
 						}
 					}
+					else{
+						foreach($group in $groups){
+							foreach($right in $rights){
+								$action = "Allow"
+								if($deny){ $action = "Deny"}
+								$acl = Get-Acl $path
+								$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, "ContainerInherit, ObjectInherit", "None", $action) 
+								$acl.AddAccessRule($rule)
+								Set-Acl $path $acl
+							}
+						}
+					}
+				}
+				else{
+					Write-Warning "skipped $($type), $path not found"
 				}
             }
 		}
