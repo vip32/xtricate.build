@@ -564,6 +564,7 @@ function PermissionRule {
 				Get-ChildItem -path (FullPath $path) -filter $filter -recurse | foreach {
 					foreach($group in $groups){
 						foreach($right in $rights){
+							# http://blogs.technet.com/b/josebda/archive/2010/11/09/how-to-handle-ntfs-folder-permissions-security-descriptors-and-acls-in-powershell.aspx
 							$action = "Allow"
 							if($deny){ $action = "Deny"}
 							$acl = Get-Acl $_.FullName

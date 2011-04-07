@@ -176,7 +176,7 @@ configuration `
                             -description "demo database for test environment" `
                             -path "c:\demo\demo.db" `
 							-permissions {
-								allowpermission -filter "*.sdf" -groups "Users" @("Read", "Write")
+								permissionrule -filter "*.sdf" -groups "Users" @("Read", "Write")
 							}`
                             -tags "all" 
 						
