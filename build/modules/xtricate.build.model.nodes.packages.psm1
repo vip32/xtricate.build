@@ -563,16 +563,22 @@ function PermissionRule {
 				Write-Host "$($type): $groups [$rights] $path $filter" 
 				$path = FullPath $path
 				if(Test-Path $path){
+					$action="Allow"
+					$removeaction="Deny"
+					if($deny){ 
+						$action="Deny"
+						$removeaction="Allow"
+					}
 					if($filter){
 						Get-ChildItem -path (FullPath $path) -filter $filter -recurse | foreach {
 							foreach($group in $groups){
 								foreach($right in $rights){
 									# http://blogs.technet.com/b/josebda/archive/2010/11/09/how-to-handle-ntfs-folder-permissions-security-descriptors-and-acls-in-powershell.aspx
-									$action = "Allow"
-									if($deny){ $action = "Deny"}
 									$acl = Get-Acl $_.FullName
 									$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, $action)
 									$acl.AddAccessRule($rule)
+									$removerule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, $removeaction)
+									$acl.RemoveAccessRule($removerule)
 									Set-Acl $_.FullName $acl
 								}
 							}
@@ -581,11 +587,11 @@ function PermissionRule {
 					else{
 						foreach($group in $groups){
 							foreach($right in $rights){
-								$action = "Allow"
-								if($deny){ $action = "Deny"}
 								$acl = Get-Acl $path
 								$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, "ContainerInherit, ObjectInherit", "None", $action) 
 								$acl.AddAccessRule($rule)
+								$removerule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, "ContainerInherit, ObjectInherit", "None", $removeaction) 
+								$acl.RemoveAccessRule($removerule)
 								Set-Acl $path $acl
 							}
 						}
@@ -610,6 +616,5 @@ function PermissionRule {
 		Export-ModuleMember -Function Documentation, Install, uNInstall, ToString -Variable type, filter, groups, permissions
 	}
 }
-
 
 Export-Modulemember -alias * -Function *

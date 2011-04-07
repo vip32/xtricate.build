@@ -78,7 +78,7 @@ configuration `
                             -path "..\src\demo.db" `
 							-permissions {
 								permissionrule "Users" @("Read", "Write") -filter "*.sdf"
-								permissionrule "Users" "Modify"
+								permissionrule "Users" @("Write") -allow
 							}`
                             -skipinstallcopy -tags "all" 
                             
