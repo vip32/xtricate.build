@@ -72,6 +72,10 @@ function Install-RemoteEnvironment{
         [Parameter(Mandatory=0)]
         [string] $name = "",
 		[Parameter(Mandatory=0)]
+		[string] $buildscriptfile = (Get-Item $psake.build_script_file).name,
+		[Parameter(Mandatory=0)]
+		[string] $modelfile,
+		[Parameter(Mandatory=0)]
 		[string[]]$tags = $null,
         [Parameter(Mandatory=0)]
         [switch] $skipinstall=$false,
@@ -89,26 +93,35 @@ function Install-RemoteEnvironment{
                 if($resources -ne $null){
                     try{
                         if(!$skipcopy -or !$skipinstall){ $session = Create-Session -node $node -identity (Get-NodeResource $resources.identityref) -verbose }
-                        
+                        $remotelocation=(Join-Path $($resources.localdirectory) "$($name)")
                         # copy
                         if(!$skipcopy){
                             if(NotNullOrEmpty($($resources.sharename))){
                                 Copy-NetworkShare -source (Core-BuildDir) -share "\\$node\$($resources.sharename)" -directory "$($name)" `
-                                                -username $username -password $identity.password
+                                    -username $username -password $identity.password
                             }
                             else{
-                                if($session -ne $null){ Copy-Session -source (Core-BuildDir) -target (Join-Path $($resources.localdirectory) "$($name)") -session $session -maxsizemb 1024}
+                                if($session -ne $null){ Copy-Session -source (Core-BuildDir) -target $remotelocation -session $session -maxsizemb 1024}
                             }
                             # todo : ftp copy?
                         }
                         
                         if(!($skipinstall)){
 							if($session -ne $null){
-	                            Write-Host "*** ready to execute 'install' task in $($psake.build_script_file) for environment $environment ***" -ForegroundColor Yellow
-	                            Invoke-Command -Session $session -ArgumentList $environment.id,$node,$name,$tags -ScriptBlock { 
-	                                param($environment,$node,$name,$tags)
-	                                Write-Host "hello from $env:computername [node:$($node), env:$($environment)]" # todo : pass some needed params in session , $node is empty now
-	                            }
+	                            #Write-Host "*** ready to execute 'install' task in $buildscriptfile for environment $environment ***" -ForegroundColor Yellow
+	                            Invoke-Command -Session $session `
+									-ArgumentList $environment.id, $node, $name, $tags, $buildscriptfile, $remotelocation `
+									-ScriptBlock { 
+										param($environment, $node, $name, $tags, $buildscriptfile, $location)
+										Write-Host "=== executing install on $env:computername ===" -ForegroundColor Yellow -BackgroundColor DarkRed;
+										Write-Host "executing psake on $env:computername [node:$($node), environment:$($environment), buildscriptfile:$($buildscriptfile), location:$($location)]"
+										if(!(Test-Path $location)){ throw "location $location not found" }
+										Set-Location $location
+										if(!(Test-Path $buildscriptfile)){ throw "buildscriptfile $buildscriptfile not found in $location" }
+										if($tags){ .\psake.cmd $buildscriptfile -tasks install -environment $environment -tags $tags }
+										else{ .\psake.cmd $buildscriptfile -tasks install -environment $environment }
+										Write-Host "^^^ finished executing install on $env:computername ===" -ForegroundColor Yellow -BackgroundColor DarkRed;
+									}
 							}
                         }
                     }
