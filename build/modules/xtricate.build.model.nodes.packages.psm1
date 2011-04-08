@@ -44,7 +44,7 @@ function GenericPackage {
 				
 				if($permissions -ne $null){ 
 					$_permissions = &$permissions
-					$_permissions | foreach{ $_.Install($path) }
+					$_permissions | foreach{ $_.Install($path) } # todo : check if package has Install method
 				}
             }
 		}
@@ -543,9 +543,9 @@ function SystemTestPackage {
 function PermissionRule {
 	param (
 			[Parameter(Position=0,Mandatory=1)]
-			[string[]] $groups = "",
+			[string[]] $groups = "", # Users, Administrators
             [Parameter(Position=1,Mandatory=1)]
-			[string[]] $rights = @("Read", "Write"),
+			[string[]] $rights = @("Read", "Write"), # AppendData,ChangePermissions,CreateDirectories,CreateFiles,Delete,DeleteSubdirectoriesAndFiles,ExecuteFile,FullControl,ListDirectory,Modify,Read,ReadAndExecute,ReadAttributes,ReadData,ReadExtendedAttributes,ReadPermissions,Synchronize,TakeOwnership,Traverse,Write,WriteAttributes,WriteData,WriteExtendedAttributes
 			[Parameter(Position=2,Mandatory=0)]
 			[string] $filter,
 			[switch] $allow = $true,

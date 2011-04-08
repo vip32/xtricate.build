@@ -8,6 +8,7 @@ param(
   [Parameter(Position=0,Mandatory=0)]
   [string]$buildFile, #  = 'default.ps1'
   [Parameter(Position=1,Mandatory=0)]
+  [alias("task")]
   [string[]]$tasks = @(),
   [Parameter(Position=2,Mandatory=0)]
   [string]$framework = '4.0',
@@ -16,10 +17,13 @@ param(
   [Parameter(Position=4,Mandatory=0)]
   [string]$buildconfig = 'Debug',
   [Parameter(Position=5,Mandatory=0)]
+  [alias("env")]
   [string]$environment = 'LOCAL',
   [Parameter(Position=6,Mandatory=0)]
+  [alias("node")]
   [string[]]$nodes = $env:COMPUTERNAME,
   [Parameter(Position=7,Mandatory=0)]
+  [alias("tag")]
   [string[]]$tags = $null,
   [Parameter(Position=8,Mandatory=0)]
   [string]$scriptPath = (Get-Location -PSProvider FileSystem).ProviderPath,

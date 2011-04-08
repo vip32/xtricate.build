@@ -117,6 +117,7 @@ function Install-RemoteEnvironment{
 										Write-Host "executing psake on $env:computername [node:$($node), environment:$($environment), buildscriptfile:$($buildscriptfile), location:$($location)]"
 										if(!(Test-Path $location)){ throw "location $location not found" }
 										Set-Location $location
+										if(!(Test-Path .\psake.cmd)){ throw "psake.cmd not found in $location" }
 										if(!(Test-Path $buildscriptfile)){ throw "buildscriptfile $buildscriptfile not found in $location" }
 										if($tags){ .\psake.cmd $buildscriptfile -tasks install -environment $environment -tags $tags }
 										else{ .\psake.cmd $buildscriptfile -tasks install -environment $environment }

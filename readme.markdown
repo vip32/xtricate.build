@@ -11,9 +11,9 @@ xtricate.build is a psake build and deployment extension.
 * tag based model execution: only install what you want or need
 * non obtrusive: no modifications to your projects needed
 * extensibility: change the model dsl with your own items
-* environment smoke testing: is your environment installed correctly?
+* environment smoke testing: is your environment working?
 * html and diagram documentation: get an overview of your project and environment
-* nuget package management: use or publish packages with nuget
+* nuget package management: consume and publish packages with nuget
 
 ### how can i use xtricate.build in my projects?
 * copy the `.\build` folder to the root of your branch, rename if you like. 
