@@ -34,7 +34,7 @@ param(
   [Parameter(Position=11, Mandatory=0)]
   [System.Collections.Hashtable]$properties = @{ buildconfig=$buildconfig;environment=$environment;nodes=$nodes;tags=$tags }
 )
-#Add-Pssnapin Microsoft.SharePoint.PowerShell -Verbose -ErrorAction Continue # todo : remove ....
+
 remove-module psake -ea 'SilentlyContinue'
 import-module (join-path $scriptPath psake.psm1) -Force
 invoke-psake $buildFile $tasks $skiptasks $framework $docs $parameters $properties

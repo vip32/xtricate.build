@@ -103,9 +103,10 @@ function Push-Nuget-Packages {
         [Parameter(Position=2,Mandatory=1)]
         [string]$toolsdir = $(throw "toolsdir is a required parameter."),
         [Parameter(Mandatory=0)]
+		[string]$source="http://packages.nuget.org/v1/",
+		[Parameter(Mandatory=0)]
         [switch]$publish=$false
 	)
-    $source = "http://packages.nuget.org/v1/"
     $packages = Get-ChildItem $nuspecpath -Include "*.nupkg" -Recurse
     if($packages -ne $null){
         $packages | foreach {

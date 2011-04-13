@@ -115,6 +115,8 @@ function Install-RemoteEnvironment{
 										param($environment, $node, $name, $tags, $buildscriptfile, $location)
 										Write-Host "=== executing install on $env:computername ===" -ForegroundColor Yellow -BackgroundColor DarkRed;
 										Write-Host "executing psake on $env:computername [node:$($node), environment:$($environment), buildscriptfile:$($buildscriptfile), location:$($location)]"
+										#if(Find-Path iisreset.exe){ iisreset.exe | out-null }# todo : sqlce4 refs locked
+										iisreset.exe | out-null
 										if(!(Test-Path $location)){ throw "location $location not found" }
 										Set-Location $location
 										if(!(Test-Path .\psake.cmd)){ throw "psake.cmd not found in $location" }

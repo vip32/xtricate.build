@@ -68,6 +68,28 @@ function Get-RelativePath {
     }
 }
 
+# like test-path but takes $env:path into account
+Function Find-Path($Path, [switch]$All=$false, [Microsoft.PowerShell.Commands.TestPathType]$type="Any"){
+   if($(Test-Path $Path -Type $type)) {
+      return $path
+   } else {
+      [string[]]$paths = @($pwd); 
+      $paths += "$pwd;$env:path".split(";")
+      
+      $paths = Join-Path $paths $(Split-Path $Path -leaf) | ? { Test-Path $_ -Type $type }
+      if($paths.Length -gt 0) {
+         if($All) {
+            return $paths;
+         } else {
+            return $paths[0]
+         }
+      }
+   }
+   throw "Couldn't find a matching path of type $type"
+}
+New-Alias -Name FindPath -value Find-Path -Description "" -Force
+
+
 function Full-Path{
    param(
         [string]$path = $(throw "path is a required parameter.")
@@ -141,8 +163,12 @@ function Core-BuildName{
 New-Alias -Name BuildName -value Core-BuildName -Description "" -Force
 
 function Core-ResolveDefaultModel{
+	param(
+		[string] $environment
+	)
     $scriptfile = Get-Item -Path $psake.build_script_file
-    $model = "$($scriptfile.directory)\$(Core-BuildName).model.psm1"
+	if($environment){ $model = "$($scriptfile.directory)\$(Core-BuildName).$($environment).model.psm1"}
+	else{ $model = "$($scriptfile.directory)\$(Core-BuildName).model.psm1"}
     Assert (test-path $model) ("Error: Expected model {0} was not found" -f $model)
     return $model
 }

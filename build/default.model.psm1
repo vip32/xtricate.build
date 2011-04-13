@@ -1,7 +1,7 @@
 configuration `
     -settings {
         setting "worldtimeserverurl" "http://www.worldtimeserver.com"
-        dynamicsetting "setting3" { GeneratePassword }
+        dynamicsetting "setting3" { "Password123"  } # GeneratePassword << causes invalid config characters
     } `
     -environments { 
 		environment "local" `
@@ -28,7 +28,7 @@ configuration `
                     -name "somewhereoutthere"
                     
                 computer "webserver" `
-                    -name @("PC*","BDS*") -ip "127.0.0.1" -domain "localhost" `
+                    -name @("PC*","DEV-LOCAL*") -ip "127.0.0.1" -domain "localhost" `
                     -description "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
                         tempor invidunt ut labore et dolore magna aliquyam erat." `
                     -resources {

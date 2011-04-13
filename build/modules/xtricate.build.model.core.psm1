@@ -141,7 +141,7 @@ function Get-Resources-TopologicalSort {
     )
     $resourcesarray = @()
     $resources | where { $_ -ne $null } | 
-                    foreach { $resourcesarray += "$($_.type):$($_.dependson -join ",")" } 
+                 foreach { $resourcesarray += "$($_.type):$($_.dependson -join ",")" } 
     #Write-Host "sorting resources: $resourcesarray"
     if(arraynotnullorempty($resourcesarray)){ Get-TopologicalSort $resourcesarray $reverse }
 }

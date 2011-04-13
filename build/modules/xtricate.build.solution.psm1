@@ -57,6 +57,35 @@ function Core-AssemblyInfo{
 }
 New-Alias -Name AssemblyInfo -value Core-AssemblyInfo -Description "" -Force
 
+function Get-Solution-TopologicalSort {
+    param(
+        [Parameter(Position=0,Mandatory=1)]
+        [object[]] $solutions = $(throw "solutions is a required parameter."), 
+        [Parameter(Position=1,Mandatory=0)]
+        [switch] $reverse = $false
+    )
+    $solutionsarray = @()
+    $solutions | where { $_ -ne $null } | 
+                 foreach { $solutionsarray += "$($_.id):$($_.dependson -join ",")" } 
+    if(arraynotnullorempty($solutionsarray)){ Get-TopologicalSort $solutionsarray $reverse }
+}
+
+function Core-CleanSolutions{
+	param(
+		[object[]] $solutions = $(throw "solutions to build is a required parameter."),
+		[string] $framework = '4.0',
+		[string[]] $tags
+	)
+	Get-Solution-TopologicalSort $solutions | foreach {
+		foreach($solution in $solutions) { 
+			if($solution.id -eq $_){ 
+				if(comparetags $tags $solution.tags){ cleansolution $solution.path -framework $framework }
+			}
+		}
+	}
+}
+New-Alias -Name CleanSolutions -value Core-CleanSolutions -Description "" -Force
+
 function Core-CleanSolution{
     param(
         [string[]] $solutions = $(throw "solutions to build is a required parameter."),
@@ -66,7 +95,7 @@ function Core-CleanSolution{
     )
     $solutions | foreach {
         Write-Host "clean solution: $_"
-        Assert (test-path $_) ("Error: Solution to build {0} was not found" -f $_)
+        Assert (test-path $_) ("Error: Solution to clean {0} was not found" -f $_)
         exec { &msbuild $_ /verbosity:$verbosity /target:Clean /p:DefineConstants=net40 /p:TargetFrameworkVersion=$framework /p:ToolsVersion=$framework /nologo } $errormessage
     }
 }
@@ -81,6 +110,24 @@ function Core-FirstSolutionFile{
 }
 New-Alias -Name FirstSolution -value Core-FirstSolutionFile -Description "" -Force
 
+function Core-BuildSolutions{
+	param(
+		[object[]] $solutions = $(throw "solutions to build is a required parameter."),
+		[string] $buildconfig = "Debug",
+        [string] $outdir = ".\bin\$buildconfig",
+		[string] $framework = '4.0',
+		[string[]] $tags
+	)
+	Get-Solution-TopologicalSort $solutions | foreach {
+		foreach($solution in $solutions) { 
+			if($solution.id -eq $_){ 
+				if(comparetags $tags $solution.tags){ buildsolution $solution.path -buildconfig $buildconfig -outdir $outdir -framework $framework }
+			}
+		}
+	}
+}
+New-Alias -Name BuildSolutions -value Core-BuildSolutions -Description "" -Force
+
 function Core-BuildSolution{
     param(
         [string[]] $solutions = $(throw "solutions to build is a required parameter."),
@@ -91,12 +138,64 @@ function Core-BuildSolution{
         [string] $verbosity = "minimal"
     )
     $solutions | foreach {
-        Write-Host "Building $buildconfig/$framework $solution"
+        Write-Host "Building $buildconfig/$framework $($_)"
         # exec { &"$base_dir\tools\pscx\echoargs.exe" $solution /verbosity:minimal "/p:OutDir=$build_dir\\" /p:Configuration=$buildconfig /p:DefineConstants=net40 /p:TargetFrameworkVersion=$framework /p:ToolsVersion=$framework /nologo } "TEST"
         Assert (test-path $_) ("Error: Solution to build {0} was not found" -f $_)
         exec { &msbuild $_ /verbosity:$verbosity "/p:OutDir=$outdir\\" /p:Configuration=$buildconfig /p:DefineConstants=net40 /p:TargetFrameworkVersion=$framework /p:ToolsVersion=$framework /nologo } $errormessage
     }
 }
 New-Alias -Name BuildSolution -value Core-BuildSolution -Description "" -Force
+
+function Build{
+	param(
+		[Parameter(Position=0,Mandatory=1)]
+		[scriptblock] $solutions
+	)
+	New-Module -ArgumentList $solutions -AsCustomObject {
+		param ($solutions)
+		
+		if($solutions -ne $null){ $_solutions = &$solutions }
+		function Solutions {
+			&$solutions
+		}
+		
+		Export-ModuleMember -Function Solutions -Variable _solutions
+	}
+}
+
+function Solution{
+	param (
+			[Parameter(Position=0,Mandatory=1)]
+			[string] $id = "",
+            [Parameter(Position=1,Mandatory=1)]
+			[string] $path = "",
+			[Parameter(Position=2,Mandatory=0)]
+			[string] $name = "",
+            [Parameter(Mandatory=0)]
+            [string] $description = $null,
+            [Parameter(Mandatory=0)]
+            [switch] $skipclean = $false,
+			[Parameter(Mandatory=0)]
+            [switch] $skipbuild = $false,
+            [Parameter(Mandatory=0)]
+			[scriptblock] $settings = $null,
+			[Parameter(Mandatory=0)]
+			[string[]] $dependson = @(),
+			[Parameter(Mandatory=0)]
+			[string[]] $tags = @()
+	)
+	New-Module -ArgumentList $id, $path, $name, $description, $skipclean, $skipbuild, $settings, $dependson, $tags -AsCustomObject {
+		param ( $id, $path, $name, $description, $skipclean, $skipbuild, $settings, $dependson, $tags )
+		$type = "vssolution"
+        
+        if($settings -ne $null){ $_settings = &$settings }
+    
+        function Settings {
+			&$settings
+		}
+        
+		Export-ModuleMember -Function Settings -Variable type, id, path, name, description, skipclean, skipbuild, dependson, tags, _settings
+	}
+}
 
 Export-Modulemember -alias * -Function *
