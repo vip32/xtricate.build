@@ -405,7 +405,6 @@ function WebSite {
                         Write-Warning "ssl cert error"
                     }
                 }
-                Write-Host "starting site"
                 Start-Website -Name $name 
                 #$state = Get-WebURL -PSPath "IIS:\Sites\$name" 
                 #Write-Host "    state: $state"
