@@ -28,7 +28,7 @@ configuration `
                     -name "somewhereoutthere"
                     
                 computer "webserver" `
-                    -name @("PC*","DEV-LOCAL*") -ip "127.0.0.1" -domain "localhost" `
+                    -name @("DOOM*", "NB*", "DEV-LOCAL*") -ip "127.0.0.1" -domain "localhost" `
                     -description "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
                         tempor invidunt ut labore et dolore magna aliquyam erat." `
                     -resources {
@@ -59,7 +59,7 @@ configuration `
 							-path "c:\inetpub\wwwroot" `
                             -apppoolref "defaultapppool" `
                             -hostheader "www.demosite.local" `
-                            -certificateref "websslcert" `
+                            -certificateref "websslcert" -sslport 4430 `
                             -settings { setting "demosetting" "local" } `
                              -tags "all", "sites"
                              
@@ -159,7 +159,7 @@ configuration `
 							-path "c:\inetpub\wwwroot" `
                             -apppoolref "defaultapppool" `
                             -hostheader "www.demosite.test" `
-                            -certificateref "websslcert" `
+                            -certificateref "websslcert" -sslport 4430 `
                             -settings { setting "demosetting" "test" } `
                             -tags "all", "sites"
                              

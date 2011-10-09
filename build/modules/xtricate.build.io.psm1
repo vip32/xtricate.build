@@ -234,7 +234,9 @@ function Import-Certificate
             {
                 $certfile = $_
             }
-            $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 $certfile,$CertPassword
+            # http://www.orcsweb.com/blog/james/powershell-ing-on-windows-server-how-to-import-certificates-using-powershell/
+			$cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
+			$cert.import($CertFile,$CertPassword,"Exportable,PersistKeySet") # specifying Exportable is a security, needed otherwise error when assigning in iis (logon session does not exist)
 		}
 		catch
 		{
