@@ -573,6 +573,7 @@ function PermissionRule {
 						Get-ChildItem -path (FullPath $path) -filter $filter -recurse | foreach {
 							foreach($group in $groups){
 								foreach($right in $rights){
+									$file = $_.FullName
 									try{
 										# http://blogs.technet.com/b/josebda/archive/2010/11/09/how-to-handle-ntfs-folder-permissions-security-descriptors-and-acls-in-powershell.aspx
 										$acl = Get-Acl $_.FullName
@@ -580,10 +581,10 @@ function PermissionRule {
 										$acl.AddAccessRule($rule)
 										$removerule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, $removeaction)
 										$acl.RemoveAccessRule($removerule)
-										Set-Acl $_.FullName $acl
+										Set-Acl $_.FullName $acl 
 									}
 									catch{
-										Write-Warning "$($type): cannot apply rule for $($group) [$($right)]" # $($_.Exception.Message.ToString())
+										Write-Warning "$($type): cannot apply rule for $($group) [$($right)] on $($file)" # $($_.Exception.Message.ToString())
 									}
 								}
 							}
@@ -601,7 +602,7 @@ function PermissionRule {
 									Set-Acl $path $acl
 								}
 								catch{
-										Write-Warning "$($type): cannot apply rule for $($group) [$($right)]" # $($_.Exception.Message.ToString())
+										Write-Warning "$($type): cannot apply rule for $($group) [$($right)] on $($path)" # $($_.Exception.Message.ToString())
 								}
 							}
 						}
