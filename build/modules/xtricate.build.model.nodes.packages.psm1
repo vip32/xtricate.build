@@ -573,13 +573,18 @@ function PermissionRule {
 						Get-ChildItem -path (FullPath $path) -filter $filter -recurse | foreach {
 							foreach($group in $groups){
 								foreach($right in $rights){
-									# http://blogs.technet.com/b/josebda/archive/2010/11/09/how-to-handle-ntfs-folder-permissions-security-descriptors-and-acls-in-powershell.aspx
-									$acl = Get-Acl $_.FullName
-									$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, $action)
-									$acl.AddAccessRule($rule)
-									$removerule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, $removeaction)
-									$acl.RemoveAccessRule($removerule)
-									Set-Acl $_.FullName $acl
+									try{
+										# http://blogs.technet.com/b/josebda/archive/2010/11/09/how-to-handle-ntfs-folder-permissions-security-descriptors-and-acls-in-powershell.aspx
+										$acl = Get-Acl $_.FullName
+										$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, $action)
+										$acl.AddAccessRule($rule)
+										$removerule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, $removeaction)
+										$acl.RemoveAccessRule($removerule)
+										Set-Acl $_.FullName $acl
+									}
+									catch{
+										Write-Warning "$($type): cannot apply rule for $($group) [$($right)]"
+									}
 								}
 							}
 						}
@@ -587,12 +592,17 @@ function PermissionRule {
 					else{
 						foreach($group in $groups){
 							foreach($right in $rights){
-								$acl = Get-Acl $path
-								$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, "ContainerInherit, ObjectInherit", "None", $action) 
-								$acl.AddAccessRule($rule)
-								$removerule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, "ContainerInherit, ObjectInherit", "None", $removeaction) 
-								$acl.RemoveAccessRule($removerule)
-								Set-Acl $path $acl
+								try{
+									$acl = Get-Acl $path
+									$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, "ContainerInherit, ObjectInherit", "None", $action) 
+									$acl.AddAccessRule($rule)
+									$removerule = New-Object System.Security.AccessControl.FileSystemAccessRule($group, $right, "ContainerInherit, ObjectInherit", "None", $removeaction) 
+									$acl.RemoveAccessRule($removerule)
+									Set-Acl $path $acl
+								}
+								catch{
+										Write-Warning "$($type): cannot apply rule for $($group) [$($right)]"
+								}
 							}
 						}
 					}

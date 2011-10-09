@@ -77,8 +77,8 @@ configuration `
                             -description "demo database for local environment" `
                             -path "..\src\demo.db" `
 							-permissions {
-								permissionrule "Users" @("Read", "Write") -filter "*.sdf"
-								permissionrule "Users" @("Write") -allow
+								permissionrule -groups @("Users", "Benutzer") @("Read", "Write") -filter "*.sdf"
+								permissionrule -groups @("Users", "Benutzer") @("Write") -allow
 							}`
                             -skipinstallcopy -tags "all" 
                             
@@ -177,7 +177,7 @@ configuration `
                             -description "demo database for test environment" `
                             -path "c:\demo\demo.db" `
 							-permissions {
-								permissionrule -filter "*.sdf" -groups "Users" @("Read", "Write")
+								permissionrule -filter "*.sdf" -groups @("Users", "Benutzer") @("Read", "Write")
 							}`
                             -tags "all" 
 						
