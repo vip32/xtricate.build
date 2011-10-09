@@ -583,7 +583,7 @@ function PermissionRule {
 										Set-Acl $_.FullName $acl
 									}
 									catch{
-										Write-Warning "$($type): cannot apply rule for $($group) [$($right)]"
+										Write-Warning "$($type): cannot apply rule for $($group) [$($right)]" # $($_.Exception.Message.ToString())
 									}
 								}
 							}
@@ -601,7 +601,7 @@ function PermissionRule {
 									Set-Acl $path $acl
 								}
 								catch{
-										Write-Warning "$($type): cannot apply rule for $($group) [$($right)]"
+										Write-Warning "$($type): cannot apply rule for $($group) [$($right)]" # $($_.Exception.Message.ToString())
 								}
 							}
 						}

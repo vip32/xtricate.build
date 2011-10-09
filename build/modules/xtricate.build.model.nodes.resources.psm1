@@ -401,8 +401,8 @@ function WebSite {
                             Get-ChildItem cert:\LocalMachine\My | Where-Object {$_.ThumbPrint -eq $thumbprint} | Select-Object -First 1 | New-Item 0.0.0.0!$($sslport) | Out-Null
                         }
                     }
-                    catch{
-                        Write-Warning "ssl cert error"
+                    catch{ # [Microsoft.IIs.PowerShell.Framework.ProviderException]
+                        Write-Warning "$($type): $($_.Exception.Message.ToString())" # ssl binding allready exists
                     }
                 }
                 Start-Website -Name $name 
