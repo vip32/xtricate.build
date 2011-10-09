@@ -69,7 +69,7 @@ function Get-RelativePath {
 }
 
 # like test-path but takes $env:path into account
-Function Find-Path($Path, [switch]$All=$false, [Microsoft.PowerShell.Commands.TestPathType]$type="Any"){
+Function Find-Path($Path, [switch] $All=$false, [Microsoft.PowerShell.Commands.TestPathType]$type="Any"){
    if($(Test-Path $Path -Type $type)) {
       return $path
    } else {

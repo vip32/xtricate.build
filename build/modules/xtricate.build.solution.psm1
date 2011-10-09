@@ -26,7 +26,8 @@ function Core-AssemblyInfo{
         [string] $company,
         [string] $product,
         [string] $copyright,
-        [string] $version
+        [string] $version,
+		[string] $commit
     )
     $asmInfo = "using System;
     using System.Reflection;
@@ -39,6 +40,7 @@ function Core-AssemblyInfo{
     [assembly: AssemblyDescriptionAttribute(""$description"")]
     [assembly: AssemblyCompanyAttribute(""$company"")]
     [assembly: AssemblyProductAttribute(""$product"")]
+	[assembly: AssemblyTrademarkAttribute(""$commit"")]
     [assembly: AssemblyCopyrightAttribute(""$copyright"")]
     [assembly: AssemblyVersionAttribute(""$version"")]
     [assembly: AssemblyInformationalVersionAttribute(""$version"")]
@@ -51,7 +53,7 @@ function Core-AssemblyInfo{
             Write-Host "creating directory $dir"
             [System.IO.Directory]::CreateDirectory($dir)
         }
-        Write-Host "assemblyinfo: $_ [$($version)]"
+        Write-Host "assemblyinfo: $_ [$($version)] $commit"
         Write-Output $asmInfo > $_
     }
 }
@@ -89,14 +91,13 @@ New-Alias -Name CleanSolutions -value Core-CleanSolutions -Description "" -Force
 function Core-CleanSolution{
     param(
         [string[]] $solutions = $(throw "solutions to build is a required parameter."),
-        [string] $framework = '4.0',
         [string] $errormessage = "Build failed!",
         [string] $verbosity = "minimal"
     )
     $solutions | foreach {
         Write-Host "clean solution: $_"
         Assert (test-path $_) ("Error: Solution to clean {0} was not found" -f $_)
-        exec { &msbuild $_ /verbosity:$verbosity /target:Clean /p:DefineConstants=net40 /p:TargetFrameworkVersion=$framework /p:ToolsVersion=$framework /nologo } $errormessage
+        exec { &msbuild $_ /verbosity:$verbosity /target:Clean /nologo } $errormessage
     }
 }
 New-Alias -Name CleanSolution -value Core-CleanSolution -Description "" -Force
@@ -115,13 +116,12 @@ function Core-BuildSolutions{
 		[object[]] $solutions = $(throw "solutions to build is a required parameter."),
 		[string] $buildconfig = "Debug",
         [string] $outdir = ".\bin\$buildconfig",
-		[string] $framework = '4.0',
 		[string[]] $tags
 	)
 	Get-Solution-TopologicalSort $solutions | foreach {
 		foreach($solution in $solutions) { 
 			if($solution.id -eq $_){ 
-				if(comparetags $tags $solution.tags){ buildsolution $solution.path -buildconfig $buildconfig -outdir $outdir -framework $framework }
+				if(comparetags $tags $solution.tags){ buildsolution $solution.path -buildconfig $buildconfig -outdir $outdir }
 			}
 		}
 	}
@@ -133,15 +133,14 @@ function Core-BuildSolution{
         [string[]] $solutions = $(throw "solutions to build is a required parameter."),
         [string] $buildconfig = "Debug",
         [string] $outdir = ".\bin\$buildconfig",
-        [string] $framework = '4.0',
         [string] $errormessage = "Build failed!",
         [string] $verbosity = "minimal"
     )
     $solutions | foreach {
-        Write-Host "Building $buildconfig/$framework $($_)"
+        Write-Host "Building $($buildconfig)/$($framework) $($_)"
         # exec { &"$base_dir\tools\pscx\echoargs.exe" $solution /verbosity:minimal "/p:OutDir=$build_dir\\" /p:Configuration=$buildconfig /p:DefineConstants=net40 /p:TargetFrameworkVersion=$framework /p:ToolsVersion=$framework /nologo } "TEST"
         Assert (test-path $_) ("Error: Solution to build {0} was not found" -f $_)
-        exec { &msbuild $_ /verbosity:$verbosity "/p:OutDir=$outdir\\" /p:Configuration=$buildconfig /p:DefineConstants=net40 /p:TargetFrameworkVersion=$framework /p:ToolsVersion=$framework /nologo } $errormessage
+        exec { &msbuild $_ /verbosity:$verbosity "/p:OutDir=$outdir\\" /p:Configuration=$buildconfig /nologo } $errormessage
     }
 }
 New-Alias -Name BuildSolution -value Core-BuildSolution -Description "" -Force
