@@ -94,7 +94,10 @@ function Full-Path{
    param(
         [string]$path = $(throw "path is a required parameter.")
     )
-    return [system.io.path]::GetFullPath($path)
+	if(Test-Path $path){
+    	return Resolve-Path $path #[system.io.path]::GetFullPath($path)
+	}
+	return $path
 }
 New-Alias -Name FullPath -value Full-Path -Description "" -Force
 
@@ -115,11 +118,17 @@ function Core-EnsureFolder {
 	)
     $path = Full-Path $path
 	if(!(Test-Path $path)){
+		Write-Host "create: $(Get-RelativePath (fullpath .) $path)"
 		$path -split "\\" | foreach { 
 			if($newpath -eq $null) { $newpath = $_ }
 	        else { $newpath = Join-Path -Path $newpath -ChildPath $_}
-            if(!(Test-Path $_)) {  $null = New-Item -Type Directory -Confirm:$false -Force -Path $newpath }
+            if(!(Test-Path $_)) {  
+				$null = New-Item -Type Directory -Confirm:$false -Force -Path $newpath 
+			}
 		}
+	}
+	else{
+		Write-Host "exists: $path"
 	}
 }
 New-Alias -Name EnsureFolder -value Core-EnsureFolder -Description "" -Force
