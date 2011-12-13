@@ -65,7 +65,7 @@ function Load-Configuration
 	
     if (test-path $psakeConfigFilePath)
     {
-		write-host "loading config: "$psakeConfigFilePath
+		write-verbose "loading config: $psakeConfigFilePath"
         try
         {
             . $psakeConfigFilePath
@@ -1146,17 +1146,19 @@ Assert
         $currentContext = $psake.context.Peek()
 
         $modules = $null
-
+        $modulesPath = $null
         if ($psake.config.modules.autoload -eq $true)
         {
             if ($psake.config.modules.directory)
             {
                 Assert (test-path $psake.config.modules.directory) ($msgs.error_invalid_module_dir -f $psake.config.modules.directory)
                 $modules = get-item (join-path $psake.config.modules.directory *.psm1)
+                $modulesPath = $psake.config.modules.directory
             }
             elseif (test-path (join-path $PSScriptRoot "modules"))
             {
                 $modules = get-item (join-path (join-path $PSScriptRoot "modules") "*.psm1")
+                $modulesPath = ".\modules"
             }
         }
         else
@@ -1169,9 +1171,14 @@ Assert
 
         if ($modules)
         {
-            $modules | % { "loading module: $_"; $module = import-module $_ -passthru -Global -Force -DisableNameChecking; if (!$module) { throw ($msgs.error_loading_module -f $_.Name)} }
-            ""                                                                                # ^^^^ added by vip32 : for reloading in session
-			#                                                                          ^^^^ added by vip32 : needed for global params/and mod functions (deployment)
+            write-host "including modules: $modulesPath"
+            $modules | % { 
+                write-verbose "$module"
+                $module = import-module $_ -passthru -Global -Force -DisableNameChecking; 
+                if (!$module) { throw ($msgs.error_loading_module -f $_.Name)} 
+            }
+            # ^^^^ added by vip32 : for reloading in session
+            # ^^^^ added by vip32 : needed for global params/and mod functions (deployment)
         }
 
         $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()	

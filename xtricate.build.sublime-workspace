@@ -11,6 +11,16 @@
 	},
 	"buffers":
 	[
+		{
+			"contents": "[SideBarGit@SublimeText xtricate.build/] git status --untracked-files=all --ignored -- ./\n\n# Improve this command, the output or the tab title by posting here:\n# http://www.sublimetext.com/forum/viewtopic.php?f=5&t=3405\n# Tip: F5 will run the command again and refresh the contents of this tab\n\n# On branch master\n# Your branch is ahead of 'origin/master' by 1 commit.\n#\nnothing to commit (working directory clean)",
+			"settings":
+			{
+				"buffer_size": 414,
+				"line_ending": "Windows",
+				"name": "Status: xtricate.build",
+				"scratch": true
+			}
+		}
 	],
 	"build_system": "Packages/PowerShell/SublimeText-PowerShell-bd84aa1/Support/Powershell.sublime-build",
 	"command_palette":
@@ -96,6 +106,7 @@
 	},
 	"file_history":
 	[
+		"/C/data/Dropbox/projects/xtricate.build/build/modules/xtricate.build.install.psm1",
 		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/IndentGuides/Indent Guides.sublime-settings",
 		"/C/data/Dropbox/projects/_tryout/heroku1/.gitignore",
 		"/C/data/Dropbox/projects/_tryout/heroku1/node_modules/connect/index.js",
@@ -175,6 +186,51 @@
 		{
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"settings":
+					{
+						"buffer_size": 414,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								414,
+								414
+							]
+						],
+						"settings":
+						{
+							"SideBarGitBackground": false,
+							"SideBarGitCommand":
+							[
+								"git",
+								"status",
+								"--untracked-files=all",
+								"--ignored",
+								"--",
+								"./"
+							],
+							"SideBarGitIsASideBarGitTab": true,
+							"SideBarGitItem": "C:\\data\\Dropbox\\projects\\xtricate.build",
+							"SideBarGitModal": false,
+							"SideBarGitNoResults": "No output to show",
+							"SideBarGitSyntaxFile": "Packages/Git/Git Graph.tmLanguage",
+							"SideBarGitTitle": "Status: xtricate.build",
+							"SideBarGitToStatusBar": false,
+							"default_dir": "C:\\data\\Dropbox\\projects",
+							"encoding": "UTF-8",
+							"fallback_encoding": "UTF-8",
+							"syntax": "Packages/Git/Git Graph.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],
