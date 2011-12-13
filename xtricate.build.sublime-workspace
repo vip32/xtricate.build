@@ -1,0 +1,243 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"protop",
+				"child_process.fork(modulePath, args, options);"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "Packages/PowerShell/SublimeText-PowerShell-bd84aa1/Support/Powershell.sublime-build",
+	"command_palette":
+	{
+		"height": 349.0,
+		"selected_items":
+		[
+			[
+				"packa",
+				"Package Control: List Packages"
+			],
+			[
+				"if",
+				"Snippet: (fun) new function"
+			],
+			[
+				"Package Control: ",
+				"Package Control: List Packages"
+			],
+			[
+				"term",
+				"Nodejs::Run::Current File + Arguments"
+			],
+			[
+				"power",
+				"Set Syntax: Powershell v2"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"install pa",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"install p",
+				"Package Control: Install Package"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"npm",
+				"Nodejs::NPM::List"
+			],
+			[
+				"node",
+				"Nodejs::Run::Current File + Arguments"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 416.0
+	},
+	"console":
+	{
+		"height": 129.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": false,
+		"show_minimap": true,
+		"show_open_files": false,
+		"show_tabs": true,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/IndentGuides/Indent Guides.sublime-settings",
+		"/C/data/Dropbox/projects/_tryout/heroku1/.gitignore",
+		"/C/data/Dropbox/projects/_tryout/heroku1/node_modules/connect/index.js",
+		"/C/data/Dropbox/projects/_tryout/heroku1/node_modules/connect/lib/connect.js",
+		"/C/data/Dropbox/projects/_tryout/heroku1/web.js",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/Default/Default (Windows).sublime-keymap",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/Change Tracker/Default (Windows).sublime-keymap",
+		"/C/data/Dropbox/projects/_tryout/heroku1/package.json",
+		"/C/data/Dropbox/projects/_tryout/heroku1/heroku1.sublime-project",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/SideBarGit/Default (Windows).sublime-keymap",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/SideBarGit/readme.md",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/SideBarGit/SideBarItem.py",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/SideBarGit/Side Bar.sublime-menu",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/SideBarGit/SideBarGitCommands.py",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/PowerShell/SublimeText-PowerShell-bd84aa1/Support/Powershell.sublime-build",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/SideBarGit/SideBarItem.pyc",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/PowerShell/SublimeText-PowerShell-bd84aa1/Support/PowershellSyntax.JSON-tmLanguage",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/PowershellUtils/README.rst",
+		"/C/data/Dropbox/projects/_tryout/heroku1/test.ps1",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/Package Control/Package Control.sublime-settings",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/Terminal/Default (Windows).sublime-keymap",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/User/Default (Windows).sublime-keymap",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/Default/Distraction Free.sublime-settings",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/CoffeeScript/README.markdown",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/User/SideBarEnhancements/Open With/Side Bar.sublime-menu",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/SideBarEnhancements/Default (Windows).sublime-keymap",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/PowerShell/SublimeText-PowerShell-bd84aa1/Support/PowershellSyntax.sublime-settings",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/PowerShell/SublimeText-PowerShell-bd84aa1/Support/PowershellSyntax.tmLanguage",
+		"/C/data/Dropbox/projects/xtricate.build/build/default.ps1",
+		"/C/data/Dropbox/projects/xtricate.build/build/psake.psm1",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Installed Packages/PowerShell.sublime-package",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/sublime-jslint/sublime-jslint.sublime-settings",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/Nodejs/Nodejs.sublime-settings",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/User/sublime-jslint.sublime-settings",
+		"/C/data/Dropbox/projects/_tryout/heroku1/heroku1.sublime-workspace",
+		"/C/data/Dropbox/tools/sublimetext2/Data/Packages/User/Terminal.sublime-settings"
+	],
+	"find":
+	{
+		"height": 32.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"C:\\data\\Dropbox\\tools\\sublimetext2\\Data\\Packages\\SideBarGit"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"side_bar_git_commit",
+			"task",
+			"Task",
+			"task",
+			"Task",
+			"jsl"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 29.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 60.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"web",
+				"web.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 216.0,
+	"status_bar_visible": true
+}
