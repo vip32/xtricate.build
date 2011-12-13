@@ -1157,7 +1157,7 @@ Assert
             }
             elseif (test-path (join-path $PSScriptRoot "modules"))
             {
-                $modules = get-item (join-path (join-path $PSScriptRoot "modules") "*.psm1")
+                $modules = get-childitem (join-path $PSScriptRoot "modules") "*.psm1" -recurse
                 $modulesPath = ".\modules"
             }
         }
@@ -1173,8 +1173,8 @@ Assert
         {
             write-host "including modules: $modulesPath"
             $modules | % { 
-                write-verbose "$module"
-                $module = import-module $_ -passthru -Global -Force -DisableNameChecking; 
+                write-verbose "$($_.fullname)"
+                $module = import-module $_.fullname -passthru -Global -Force -DisableNameChecking; 
                 if (!$module) { throw ($msgs.error_loading_module -f $_.Name)} 
             }
             # ^^^^ added by vip32 : for reloading in session
