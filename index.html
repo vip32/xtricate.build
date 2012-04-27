@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Xtricate.build by vip32</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Xtricate.build</h1>
+        <h2>xtricate.build is a psake build and deployment extension</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/vip32/xtricate.build/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/vip32/xtricate.build/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/vip32/xtricate.build" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>xtricate.build   </h1>
+
+<p>xtricate.build is a psake build and deployment extension. </p>
+
+<h3>some of the features</h3>
+
+<ul>
+<li>environment management: control your environment and everything depending on it.</li>
+<li>local and remote deployments: one way to deploy them all</li>
+<li>output packaging: keep everything deployable in one place</li>
+<li>configuration and script templating: the model knows everything, use it</li>
+<li>tag based model execution: only install what you want or need</li>
+<li>non obtrusive: no modifications to your projects needed</li>
+<li>extensibility: change the model dsl with your own items</li>
+<li>environment smoke testing: is your environment working?</li>
+<li>html and diagram documentation: get an overview of your project and environment</li>
+<li>nuget package management: consume and publish packages with nuget</li>
+</ul><h3>how can i use xtricate.build in my projects?</h3>
+
+<ul>
+<li>copy the <code>.\build</code> folder to the root of your branch, rename if you like. </li>
+<li>create a <code>.\build\default.ps1</code> specific for your projects (psake), modify the properties and tasks if needed.</li>
+<li>create a <code>.\build\default.model.psm1</code> specific for your environment (model), start with a 'local' environment.</li>
+<li>run <code>psake.cmd taskname(s)</code> from the <code>.\build</code> folder with the appropriate task(s).</li>
+</ul><h2>demonstration</h2>
+
+<p><code>.\src\demo*</code> contains a buildable and deployable .net 4 solution using these xtricate.build extensions. </p>
+
+<pre><code>.\build
+    \assets                     [demo project assets like certificates]
+    \modules                    [xtricate.build psake modules]
+    \output                     
+        \default.master         [demo project output packages appear here]
+    \tools                      [xtricate.build tools like nunit and nuget]
+    default.ps1                 [demo project psake file, the tasks]
+    default.model.psm1          [demo project model file, the environments]
+.\lib                           [demo project external libraries appear here]
+.\src                           [demo project solution]
+    \demo
+    ...
+    \demo.webservices
+</code></pre>
+
+<h2>basic usage examples</h2>
+
+<p>run the following commands from the <code>.\build</code> folder</p>
+
+<blockquote>
+<p>.\psake.cmd package</p>
+</blockquote>
+
+<p>initiates the creation of the output packages, does a complete build and places the packages in the <code>.\output</code> folder.</p>
+
+<blockquote>
+<p>.\psake.cmd templatelocal</p>
+</blockquote>
+
+<p>expands all templates (.template) in the sources folder for the local environment.</p>
+
+<blockquote>
+<p>.\psake.cmd packageinstall </p>
+</blockquote>
+
+<p>initiates the creation of the output packages and installs them on the current node, does a complete build</p>
+
+<blockquote>
+<p>.\psake.cmd remotepackageinstall -environment test -nodes nodeX -tags all</p>
+</blockquote>
+
+<p>installs the packages matching the tags on the remote node. before installing all templates are expanded for the specified environment.</p>
+
+<h2>model introduction</h2>
+
+<p>xtricate.build relies heavily on an environment model (the model), like a dsl, which contains all the environments important for the project. 
+examples of environments are : the local development workstation, a test or production environment. xtricate.build can manage the deployment of your project
+for all these environments. the model file to use is specified within the properties of the psake buildfile.</p>
+
+<pre><code>properties{
+    ...
+    $modelfile=resolvedefaultmodel
+    ...
+}
+</code></pre>
+
+<p>the defaultmodel function resolves to <code>default.model.psm1</code> if the psake buildfile used is named <code>default.ps1</code>.
+an environment consists of nodes (e.g. computers, load balancers). each node has resources and packages assigned to it</p>
+
+<ul>
+<li>a resource is something that will be there or must be created (e.g. accounts, apppools, websites, certificates).</li>
+<li>a package is something that is created by your project, for example : webapplication, folders, webservices, console apps, scheduled tasks, windows services</li>
+</ul><h3>the environment model dsl :</h3>
+
+<pre><code>configuration
+    settings
+        environment -id 'local' -name
+            settings
+            node 'localhost' -id -name
+                resources -id -name -skipinstall -skipuninstall -tags
+                packages -id -name -skipinstall -skipuninstall -tags
+        environment -id 'test' -name
+            settings
+            node -id 'webserver' -name
+                resources
+                packages
+            node -id 'dbserver' -name
+                resources
+                package
+</code></pre>
+
+<h3>the basic node resources <code>.\modules\xtricate.build.model.nodes.resouces.psm1</code>
+</h3>
+
+<ul>
+<li>remoting: configure the remote session for this node, used during remote installation</li>
+<li>certificate</li>
+<li>apppool</li>
+<li>localidentity</li>
+<li>website</li>
+<li>hostsfile </li>
+</ul><h3>the basic node packages <code>.\modules\xtricate.build.model.nodes.packages.psm1</code>
+</h3>
+
+<ul>
+<li>genericpackage</li>
+<li>webapppackage</li>
+<li>databasepackage</li>
+<li>systemtestpackage</li>
+</ul><h3>solution packages</h3>
+
+<p>packages in the model most often represent a project you are working on, to couple the model to a project location a 'solution.package.psm1' file is placed in the project folder. 
+this file contains the id of the package in the model. </p>
+
+<pre><code>solutionpackage "demo.webapp" 
+</code></pre>
+
+<p>an alternative way to do the project coupling is by modifying the 'loadmodel' functions in the 'model' and 'modellocal' tasks. in this way no 'solution.package.psm1' has to be placed in the project folder. </p>
+
+<pre><code>loadmodel `
+    -modelfile $modelfile `
+    -environment $environment `
+    -packagesPath $sources_dir `
+    -solutionpackages {
+        solutionpackage -packageid "demo.webservices" -name "demo.webservices" -location "$($sources_dir)\demo.webservices"
+    }
+</code></pre>
+
+<h2>template expansion</h2>
+
+<p>the model serves as the basis for all kind of templating. templates are files which contain template functions and are expanded by executing the <code>template</code> or <code>templatelocal</code>
+tasks. 
+template expansion is not done on build or package time, the output folder with its packages does not contain expanded templates for each environment.
+for examples: the various install tasks depend on the template tasks, so template expansion is executed when needed.<br>
+all files ending with <code>.template</code> are expanded to files without this suffix. a web.config.template becomes a regular web.config this way.</p>
+
+<h3>the basic template functions <code>.\modules\xtricate.build.template.functions.psm1</code>
+</h3>
+
+<p>all template functions are used like <code>[[templatefunction -params]]</code> in the template, regular powershell scripting is allowed too.</p>
+
+<ul>
+<li>getsetting</li>
+<li>getenvironment</li>
+<li>getnoderesource</li>
+<li>getnoderesources</li>
+<li>getnoderesourcepath</li>
+<li>getnodepackage</li>
+<li>getnodepackagepath</li>
+<li>getnodepackagename</li>
+<li>getnodepackageurl</li>
+</ul><h3>template examples</h3>
+
+<blockquote>
+<p>connectionString="data source=[[fullpath (getnodepackagepath demo.db)]][[getnodepackagename demo.db]]"</p>
+
+<p>compilation debug="[[getsetting 'debug']]" targetFramework="4.0"</p>
+</blockquote>
+
+<h2>local and remote project installation</h2>
+
+<p>the contents of the <code>.\build</code> folder contains everything needed for deployment on any node within an environment. 
+starting with the following command to create the output packages :</p>
+
+<blockquote>
+<p>.\psake.cmd package</p>
+</blockquote>
+
+<p>then manually copying the build folder to a node and executing :</p>
+
+<blockquote>
+<p>.\psake.cmd install</p>
+</blockquote>
+
+<p>will install, according to the environment model, all applicable resources and packages on that node. </p>
+
+<p>or, let xtricate.build handle everything. building, copying and installation on a node can be done like this :</p>
+
+<blockquote>
+<p>.\psake.cmd remotepackageinstall -environment test -nodes dev-srv-1</p>
+</blockquote>
+
+<h2>advanced usage examples</h2>
+
+<p>run the following commands from the <code>.\build</code> folder</p>
+
+<blockquote>
+<p>.\psake.cmd spectest -environment test -tags all</p>
+</blockquote>
+
+<p>runs all spectest systemtestpackages within the <code>.\output</code> folder. the configuration templates are expanded for the specified environment, systemtests can be run anywhere.</p>
+
+<h2>the demo solution uses the following tools and technologies :</h2>
+
+<ul>
+<li>microsoft visual studio 2010</li>
+<li>microsoft asp.net mvc 3</li>
+<li>microsoft sql ce 4.0</li>
+<li>specflow 1.5</li>
+<li>watin 2.0</li>
+<li>nunit 2.5.7</li>
+<li>entityframework 4.1</li>
+<li>iis7 (webadministration module)</li>
+<li><strong><a href="http://nuget.org/List/Packages/xtricate.build">nuget</a></strong></li>
+</ul><h3>some modules are based on work by:</h3>
+
+<ul>
+<li>
+<strong><a href="https://github.com/Ang3lFir3/Chewie">chewie</a></strong> : nuget package management</li>
+<li>
+<strong><a href="http://weblogs.asp.net/soever/archive/2006/12/31/a-templating-engine-using-powershell-expressions.aspx">soever</a></strong> : powershell template engine</li>
+<li>
+<strong><a href="http://poshcode.org">poshcode.org</a></strong> : various powershell scripts</li>
+</ul><p>xtricate.build contains a modified version of <strong><a href="http://github.com/JamesKovacs/psake">psake</a></strong> by James Kovacs. some small
+improvements in module loading were made.</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
