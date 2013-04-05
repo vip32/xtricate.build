@@ -1,33 +1,33 @@
-xtricate.build   
+xtricate.build
 ==============
-  
-xtricate.build is a psake build and deployment extension. 
 
-### some of the features 
+xtricate.build is a psake build and deployment extension.
+
+### some of the features
 * environment management: control your environment and everything depending on it.
-* local and remote deployments: one way to deploy them all
-* output packaging: keep everything deployable in one place
-* configuration and script templating: the model knows everything, use it
-* tag based model execution: only install what you want or need
-* non obtrusive: no modifications to your projects needed
-* extensibility: change the model dsl with your own items
+* local and remote deployments: one way to deploy them all.
+* output packaging: keep everything deployable in one place.
+* configuration and script templating: the model knows everything, use it everywhere.
+* tag based model execution: only install what you want or need.
+* non obtrusive: no modifications to your projects needed.
+* extensibility: change the model dsl with your own items.
 * environment smoke testing: is your environment working?
-* html and diagram documentation: get an overview of your project and environment
-* nuget package management: consume and publish packages with nuget
+* html and diagram documentation: get an overview of your project and environment.
+* nuget package management: consume and publish packages with nuget.
 
 ### how can i use xtricate.build in my projects?
-* copy the `.\build` folder to the root of your branch, rename if you like. 
+* copy the `.\build` folder to the root of your branch, rename if you like.
 * create a `.\build\default.ps1` specific for your projects (psake), modify the properties and tasks if needed.
 * create a `.\build\default.model.psm1` specific for your environment (model), start with a 'local' environment.
 * run `psake.cmd taskname(s)` from the `.\build` folder with the appropriate task(s).
 
 ## demonstration
-`.\src\demo*` contains a buildable and deployable .net 4 solution using these xtricate.build extensions. 
+`.\src\demo*` contains a buildable and deployable .net 4 solution using these xtricate.build extensions.
 
     .\build
 		\assets						[demo project assets like certificates]
 		\modules					[xtricate.build psake modules]
-		\output						
+		\output
 			\default.master			[demo project output packages appear here]
 		\tools						[xtricate.build tools like nunit and nuget]
 		default.ps1					[demo project psake file, the tasks]
@@ -48,8 +48,8 @@ initiates the creation of the output packages, does a complete build and places 
 > .\psake.cmd templatelocal
 
 expands all templates (.template) in the sources folder for the local environment.
-   
-> .\psake.cmd packageinstall 
+
+> .\psake.cmd packageinstall
 
 initiates the creation of the output packages and installs them on the current node, does a complete build
 
@@ -58,10 +58,10 @@ initiates the creation of the output packages and installs them on the current n
 installs the packages matching the tags on the remote node. before installing all templates are expanded for the specified environment.
 
 ## model introduction
-xtricate.build relies heavily on an environment model (the model), like a dsl, which contains all the environments important for the project. 
+xtricate.build relies heavily on an environment model (the model), like a dsl, which contains all the environments important for the project.
 examples of environments are : the local development workstation, a test or production environment. xtricate.build can manage the deployment of your project
 for all these environments. the model file to use is specified within the properties of the psake buildfile.
-	
+
 	properties{
 		...
 		$modelfile=resolvedefaultmodel
@@ -89,14 +89,14 @@ an environment consists of nodes (e.g. computers, load balancers). each node has
                 node -id 'dbserver' -name
                     resources
             		package
-					
+
 ### the basic node resources `.\modules\xtricate.build.model.nodes.resouces.psm1`
 * remoting: configure the remote session for this node, used during remote installation
 * certificate
 * apppool
 * localidentity
 * website
-* hostsfile 
+* hostsfile
 
 ### the basic node packages `.\modules\xtricate.build.model.nodes.packages.psm1`
 * genericpackage
@@ -105,12 +105,12 @@ an environment consists of nodes (e.g. computers, load balancers). each node has
 * systemtestpackage
 
 ### solution packages
-packages in the model most often represent a project you are working on, to couple the model to a project location a 'solution.package.psm1' file is placed in the project folder. 
-this file contains the id of the package in the model. 
+packages in the model most often represent a project you are working on, to couple the model to a project location a 'solution.package.psm1' file is placed in the project folder.
+this file contains the id of the package in the model.
 
-	solutionpackage "demo.webapp" 
+	solutionpackage "demo.webapp"
 
-an alternative way to do the project coupling is by modifying the 'loadmodel' functions in the 'model' and 'modellocal' tasks. in this way no 'solution.package.psm1' has to be placed in the project folder. 
+an alternative way to do the project coupling is by modifying the 'loadmodel' functions in the 'model' and 'modellocal' tasks. in this way no 'solution.package.psm1' has to be placed in the project folder.
 
 	loadmodel `
 		-modelfile $modelfile `
@@ -122,9 +122,9 @@ an alternative way to do the project coupling is by modifying the 'loadmodel' fu
 
 ## template expansion
 the model serves as the basis for all kind of templating. templates are files which contain template functions and are expanded by executing the `template` or `templatelocal`
-tasks. 
+tasks.
 template expansion is not done on build or package time, the output folder with its packages does not contain expanded templates for each environment.
-for examples: the various install tasks depend on the template tasks, so template expansion is executed when needed.  
+for examples: the various install tasks depend on the template tasks, so template expansion is executed when needed.
 all files ending with `.template` are expanded to files without this suffix. a web.config.template becomes a regular web.config this way.
 
 ### the basic template functions `.\modules\xtricate.build.template.functions.psm1`
@@ -149,7 +149,7 @@ all template functions are used like `[[templatefunction -params]]` in the templ
 
 ## local and remote project installation
 
-the contents of the `.\build` folder contains everything needed for deployment on any node within an environment. 
+the contents of the `.\build` folder contains everything needed for deployment on any node within an environment.
 starting with the following command to create the output packages :
 
 > .\psake.cmd package
@@ -158,7 +158,7 @@ then manually copying the build folder to a node and executing :
 
 > .\psake.cmd install
 
-will install, according to the environment model, all applicable resources and packages on that node. 
+will install, according to the environment model, all applicable resources and packages on that node.
 
 or, let xtricate.build handle everything. building, copying and installation on a node can be done like this :
 
