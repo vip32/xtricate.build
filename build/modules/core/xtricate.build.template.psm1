@@ -3,7 +3,7 @@ function Expand-Templates{
         [object] $packages
     )
     Write-Host "environment:$($psake.build_configuration_environment.id)"
-    $packages | foreach { 
+    $packages | foreach {
         foreach($template in Get-ChildItem $_.location -Include "*.template" -Recurse){
             expandtemplate `
                 -file $template
@@ -28,14 +28,14 @@ New-Alias -Name ExpandTemplate -value Expand-Template -Description "" -Force
 # $path (optional): Path to template to do the expansion on (use either $text or $path)
 # $destination (optional): Destination path to write expansion result to. If not specified, the
 #                           expansion result is result as text
-# $psConfigurationPath (optional) : Path to file containing PowerShell code. File will be 
-#                                   sources using ". file", so variables can be declared 
+# $psConfigurationPath (optional) : Path to file containing PowerShell code. File will be
+#                                   sources using ". file", so variables can be declared
 #                                   without global scope
 # $leftMarker (optional): Left marker for detecting expand expression in template
 # $rightMarker (optional): Right marker for detecting expand expression in template
 # $encoding (optional): Encoding to use when reading the template file
 #
-# Simple usage usage: 
+# Simple usage usage:
 # $message="hello"; ./Template-Delegate -text 'I would like to say [[$message]] to the world'
 function Template-Expand
 {
@@ -51,7 +51,7 @@ function Template-Expand
 		$Encoding = "UTF8",
 		$skipexpand = $false
 	)
-	
+
 	if ($path -ne $null)
 	{
 		if (!(Test-Path -Path $path))
@@ -71,7 +71,7 @@ function Template-Expand
 
 	if ($psConfigurationPath -ne $null)
 	{
-		# Source the powershell configuration, so we don't have to declare variables in the 
+		# Source the powershell configuration, so we don't have to declare variables in the
 		# configuration globally
 		if (!(Test-Path -Path $psConfigurationPath))
 		{
@@ -91,15 +91,14 @@ function Template-Expand
 	}
 
 	#return
-	$matchEvaluatorDelegate = GetDelegate `
-		System.Text.RegularExpressions.MatchEvaluator {
+	$matchEvaluatorDelegate = {
 			$match = $args[0]
 			$expression = $match.get_Groups()[1].Value # content between markers
-			trap { 
+			trap {
                 Write-Host "Expansion on template `'$path`' failed. Can't evaluate expression `'$expression`'. The following error occured: $_" -ForegroundColor Red
                 #   ^^^^ write-error
                 "$errorLeftMarker $expression $errorRightMarker"
-                continue 
+                continue
             }
 			Invoke-Expression -command $expression
 		}
@@ -109,7 +108,7 @@ function Template-Expand
 	if ($destination -eq $null)
 	{
 		# Return as string
-		$expandedText 
+		$expandedText
 	}
 	else
 	{
@@ -127,14 +126,14 @@ function Template-Expand
 # $path (optional): Path to template to do the expansion on (use either $text or $path)
 # $destination (optional): Destination path to write expansion result to. If not specified, the
 #                           expansion result is result as text
-# $psConfigurationPath (optional) : Path to file containing PowerShell code. File will be 
-#                                   sources using ". file", so variables can be declared 
+# $psConfigurationPath (optional) : Path to file containing PowerShell code. File will be
+#                                   sources using ". file", so variables can be declared
 #                                   without global scope
 # $leftMarker (optional): Left marker for detecting expand expression in template
 # $rightMarker (optional): Right marker for detecting expand expression in template
 # $encoding (optional): Encoding to use when reading the template file
 #
-# Simple usage usage: 
+# Simple usage usage:
 # $message="hello"; ./Template-Delegate -text 'I would like to say [[$message]] to the world'
 
 # Helper function to emit an IL opcode
@@ -144,7 +143,7 @@ function emit
     (
         $opcode = $(throw "Missing: opcode")
     )
-    
+
     if ( ! ($op = [System.Reflection.Emit.OpCodes]::($opcode)))
     {
         throw "emit: opcode '$opcode' is undefined"
@@ -164,34 +163,34 @@ function GetDelegate
 {
     param
     (
-        [type]$type, 
+        [type]$type,
         [ScriptBlock]$scriptBlock
     )
 
     # Get the method info for this delegate invoke...
     $delegateInvoke = $type.GetMethod("Invoke")
-    
+
     # Get the argument type signature for the delegate invoke
     $parameters = @($delegateInvoke.GetParameters())
     $returnType = $delegateInvoke.ReturnParameter.ParameterType
-    
+
     $argList = new-object Collections.ArrayList
     [void] $argList.Add([ScriptBlock])
     foreach ($p in $parameters)
     {
         [void] $argList.Add($p.ParameterType);
     }
-    
+
     $dynMethod = new-object reflection.emit.dynamicmethod ("",
         $returnType, $argList.ToArray(), [object], $false)
     $ilg = $dynMethod.GetILGenerator()
-    
+
     # Place the scriptblock on the stack for the method call
     emit Ldarg_0
-    
+
     emit Ldc_I4 ($argList.Count - 1)  # Create the parameter array
     emit Newarr ([object])
-    
+
     for ($opCount = 1; $opCount -lt $argList.Count; $opCount++)
     {
         emit Dup                    # Dup the array reference
@@ -203,10 +202,10 @@ function GetDelegate
      }
         emit Stelem ([object])  # Store it in the array
     }
-    
+
     # Now emit the call to the ScriptBlock invoke method
     emit Call ([ScriptBlock].GetMethod("InvokeReturnAsIs"))
-    
+
     if ($returnType -eq [void])
     {
         # If the return type is void, pop the returned object
@@ -216,7 +215,7 @@ function GetDelegate
     {
         # Otherwise emit code to convert the result type which looks
         # like LanguagePrimitives.ConvertTo(value, type)
-    
+
         $signature = [object], [type]
         #$convertMethod =
         #    [Management.Automation.LanguagePrimitives].GetMethod(
@@ -228,11 +227,11 @@ function GetDelegate
         emit Call $convertMethod
     }
     emit Ret
-    
+
     #
     # Now return a delegate from this dynamic method...
     #
-    
+
     $dynMethod.CreateDelegate($type, $scriptBlock)
 }
 
