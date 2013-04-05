@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demo.webapp", "demo.webapp\demo.webapp.csproj", "{B6C2EA95-43C2-4954-9E37-9FBE86B172CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demo.webapp.specs", "demo.webapp.specs\demo.webapp.specs.csproj", "{4106857D-9E9F-4FFC-A332-B6299092C30F}"
