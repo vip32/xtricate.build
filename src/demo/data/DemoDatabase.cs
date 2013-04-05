@@ -7,7 +7,7 @@ namespace demo
         public DemoDatabase(string connection) : base(connection)
         {
         }
-
+         
         public DbSet<Instance> Instances { get; set; }
     }
 }
