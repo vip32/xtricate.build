@@ -13,7 +13,7 @@ function Configuration {
         if($environments -ne $null){ $_environments = &$environments }
         
         $psake.build_configuration_settings = @($_settings)
-		$psake.build_configuration_environments = @($_environments)
+	$psake.build_configuration_environments = @($_environments)
         $psake.build_solution_packages = @()
 	}
 }
