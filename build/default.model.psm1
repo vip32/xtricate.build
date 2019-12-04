@@ -4,7 +4,7 @@ configuration `
         dynamicsetting "setting3" { "Password123"  } # GeneratePassword << causes invalid config characters
     } `
     -environments { 
-		environment "local" `
+	environment "local" `
             -name "local development environment" `
             -description "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
                 tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam 
@@ -104,7 +104,7 @@ configuration `
                             -skipinstallcopy -tags "all", "sites"
                     }
             }
-		environment "test" `
+	environment "test" `
             -name "test development environment" `
             -description "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
                 tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam 
